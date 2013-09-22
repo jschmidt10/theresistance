@@ -7,7 +7,17 @@ An online version of the game 'The Resistance' (Avalon).
 
 Currently, composed of the following projects:
 
-core		core APIs for the game
-baseline	the standard role sets and game mode
-server		backend web services for online game
-client		web client for playing/configuring the game
+<table>
+  <tr>
+    <td>core</td><td>core APIs for the game</td>
+  </tr>
+  <tr>
+    <td>baseline</td><td>the standard role sets and game mode</td>
+  </tr>
+  <tr>
+    <td>server</td><td>backend web services for online game</td>
+  </tr>
+  <tr>
+    <td>client</td><td>web client for playing/configuring the game</td>
+  </tr>
+</table>
