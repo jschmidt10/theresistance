@@ -10,14 +10,25 @@ public class Mission
 		PASS, FAIL
 	}
 
-	private int participants;
+	private int numParticipants;
 	private int requiredFails;
+	private Player[] participants;
 	private Result[] results;
 
-	public Mission(int participants, int requiredFails)
+	public Mission(int numParticipants, int requiredFails)
+	{
+		this.numParticipants = numParticipants;
+		this.requiredFails = requiredFails;
+	}
+
+	public int getNumParticipants()
+	{
+		return numParticipants;
+	}
+
+	public void setParticipants(Player[] participants)
 	{
 		this.participants = participants;
-		this.requiredFails = requiredFails;
 	}
 
 	/**
@@ -30,7 +41,7 @@ public class Mission
 	 */
 	public void setResults(Result... results)
 	{
-		Arguments.verifyCount(participants, results.length);
+		Arguments.verifyCount(numParticipants, results.length);
 		this.results = results;
 	}
 
@@ -53,5 +64,4 @@ public class Mission
 
 		return failCnt < requiredFails;
 	}
-
 }

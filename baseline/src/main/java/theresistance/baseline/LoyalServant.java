@@ -10,6 +10,6 @@ public class LoyalServant extends GoodRole
 	@Override
 	public String identify(Role other)
 	{
-		return null;
+		return "UNKNOWN";
 	}
 }

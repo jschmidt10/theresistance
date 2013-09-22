@@ -17,4 +17,15 @@ public class MerlinTest
 		Assert.assertEquals("EVIL", merlin.identify(morgana));
 		Assert.assertEquals("UNKNOWN", merlin.identify(mordred));
 	}
+
+	@Test
+	public void testMerlinSeesGood_asUnknown()
+	{
+		Merlin merlin = new Merlin();
+		LoyalServant servant = new LoyalServant();
+		Percival percival = new Percival();
+
+		Assert.assertEquals("UNKNOWN", merlin.identify(servant));
+		Assert.assertEquals("UNKNOWN", merlin.identify(percival));
+	}
 }

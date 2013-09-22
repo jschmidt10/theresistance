@@ -16,7 +16,7 @@ public class ProposalTest
 	@Before
 	public void setup()
 	{
-		proposal = new Proposal(3, 5);
+		proposal = new Proposal(5);
 		players = new Player[] { new Player("player1"), new Player("player2"), new Player("player3"),
 				new Player("player4"), new Player("player5") };
 
@@ -43,12 +43,6 @@ public class ProposalTest
 		Assert.assertFalse(proposal.isApproved());
 	}
 
-	@Test(expected = IllegalArgumentException.class)
-	public void testWrongNumberOfProposedPlayers()
-	{
-		proposal.setPlayers(new Player("player1"), new Player("player2"));
-	}
-
 	@Test
 	public void testRetrieveVoteHistory()
 	{
@@ -58,5 +52,12 @@ public class ProposalTest
 
 		Assert.assertEquals(Vote.SEND, votes.get(players[0]));
 		Assert.assertEquals(Vote.DONT_SEND, votes.get(players[4]));
+	}
+
+	@Test(expected = UnsupportedOperationException.class)
+	public void testVotesUnmodifiable()
+	{
+		Map<Player, Vote> votes = proposal.getVotes();
+		votes.put(new Player("dummy"), Vote.SEND);
 	}
 }

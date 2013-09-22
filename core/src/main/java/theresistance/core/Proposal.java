@@ -1,5 +1,6 @@
 package theresistance.core;
 
+import java.util.Collections;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -14,20 +15,22 @@ public class Proposal
 	}
 
 	private int totalPlayers;
-	private int onMissionCnt;
-	private Player[] players;
+	private Player[] participants;
 	private Map<Player, Vote> votes = new TreeMap<Player, Vote>();
 
-	public Proposal(int onMissionCnt, int totalPlayers)
+	public Proposal(int totalPlayers)
 	{
-		this.onMissionCnt = onMissionCnt;
 		this.totalPlayers = totalPlayers;
 	}
 
-	public void setPlayers(Player... players)
+	public void setParticipants(Player... participants)
 	{
-		Arguments.verifyCount(onMissionCnt, players.length);
-		this.players = players;
+		this.participants = participants;
+	}
+
+	public Player[] getParticipants()
+	{
+		return participants;
 	}
 
 	public boolean isApproved()
@@ -52,6 +55,6 @@ public class Proposal
 
 	public Map<Player, Vote> getVotes()
 	{
-		return votes;
+		return Collections.unmodifiableMap(votes);
 	}
 }
