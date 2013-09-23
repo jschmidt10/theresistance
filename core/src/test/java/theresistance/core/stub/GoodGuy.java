@@ -8,7 +8,6 @@ import theresistance.core.Role;
  */
 public class GoodGuy implements Role
 {
-
 	@Override
 	public String identify(Role other)
 	{
@@ -21,4 +20,9 @@ public class GoodGuy implements Role
 		return Alignment.GOOD;
 	}
 
+	@Override
+	public boolean equals(Object obj)
+	{
+		return obj instanceof GoodGuy;
+	}
 }

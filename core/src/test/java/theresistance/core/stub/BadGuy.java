@@ -21,4 +21,9 @@ public class BadGuy implements Role
 		return Alignment.EVIL;
 	}
 
+	@Override
+	public boolean equals(Object obj)
+	{
+		return obj instanceof BadGuy;
+	}
 }
