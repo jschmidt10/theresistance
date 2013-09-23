@@ -2,6 +2,7 @@ package theresistance.core;
 
 import theresistance.core.config.GameConfig;
 import theresistance.core.config.RoleAssigner;
+import theresistance.core.util.Arguments;
 
 public class Game
 {
