@@ -1,4 +1,4 @@
-package theresistance.core;
+package theresistance.core.util;
 
 /**
  * Utility for checking arguments
