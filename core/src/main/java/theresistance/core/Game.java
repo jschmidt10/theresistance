@@ -1,5 +1,7 @@
 package theresistance.core;
 
+import java.util.Map;
+
 import theresistance.core.config.GameConfig;
 import theresistance.core.config.RoleAssigner;
 import theresistance.core.util.Arguments;
@@ -8,6 +10,7 @@ public class Game
 {
 	private Round[] rounds;
 	private Player[] players;
+	private Map<String, Object> extraInfo;
 
 	int curRound = 0;
 
@@ -90,5 +93,13 @@ public class Game
 	public void completeRound()
 	{
 		curRound++;
+	}
+
+	public Map<String, Object> getExtraInfo() {
+		return extraInfo;
+	}
+
+	public void setExtraInfo(Map<String, Object> extraInfo) {
+		this.extraInfo = extraInfo;
 	}
 }

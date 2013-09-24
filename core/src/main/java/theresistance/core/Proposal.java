@@ -13,7 +13,9 @@ public class Proposal
 	{
 		SEND, DONT_SEND
 	}
-
+	
+	private Player leader;
+	private Map<String, Object> extraInfo;
 	private int totalPlayers;
 	private Player[] participants;
 	private Map<Player, Vote> votes = new TreeMap<Player, Vote>();
@@ -56,5 +58,24 @@ public class Proposal
 	public Map<Player, Vote> getVotes()
 	{
 		return Collections.unmodifiableMap(votes);
+	}
+
+	public Player getLeader() {
+		return leader;
+	}
+
+	public void setLeader(Player leader) 
+	{
+		this.leader = leader;
+	}
+
+	public Map<String, Object> getExtraInfo() 
+	{
+		return extraInfo;
+	}
+
+	public void setExtraInfo(Map<String, Object> extraInfo) 
+	{
+		this.extraInfo = extraInfo;
 	}
 }
