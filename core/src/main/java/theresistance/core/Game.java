@@ -1,7 +1,9 @@
 package theresistance.core;
 
+import java.util.List;
 import java.util.Map;
 
+import theresistance.core.cls.ImplDetector;
 import theresistance.core.config.GameConfig;
 import theresistance.core.config.RoleAssigner;
 import theresistance.core.util.Arguments;
@@ -11,6 +13,7 @@ public class Game
 	private Round[] rounds;
 	private Player[] players;
 	private Map<String, Object> extraInfo;
+	private List<PostRoundEventHandler> postRoundEventHandlers;
 
 	int curRound = 0;
 
@@ -23,8 +26,14 @@ public class Game
 	{
 		initRounds(config.getMissions());
 		new RoleAssigner().assign(config.getPlayers(), config.getRoles());
-
+		
 		this.players = config.getPlayers();
+		
+		ImplDetector<PostRoundEventHandler> postRoundEventHandlerDetector = new ImplDetector<>(PostRoundEventHandler.class);
+		this.postRoundEventHandlers = postRoundEventHandlerDetector.getDetected();
+		for (PostRoundEventHandler handler : postRoundEventHandlers) {
+			handler.init(this);
+		}
 	}
 
 	private void initRounds(Mission[] missions)
@@ -88,10 +97,15 @@ public class Game
 	}
 
 	/**
-	 * progresses the game to the next round
+	 * progresses the game to the next round 
+	 * and calls the post round event handlers.
 	 */
 	public void completeRound()
 	{
+		for (PostRoundEventHandler handler : postRoundEventHandlers) 
+		{
+			handler.roundFinished();
+		}
 		curRound++;
 	}
 
