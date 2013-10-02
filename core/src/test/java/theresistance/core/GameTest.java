@@ -18,19 +18,19 @@ public class GameTest
 	@Before
 	public void setup()
 	{
-		players = new Player[] { new Player("p1"), new Player("p2"), new Player("p3"), new Player("p4"),
-				new Player("p5"), new Player("p6") };
+		players = new Player[] { new Player("p1"), new Player("p2"),
+				new Player("p3"), new Player("p4"), new Player("p5"),
+				new Player("p6") };
 
 		GameConfig config = new GameConfig();
 
-		config.setMissions(new Mission(2, 1), new Mission(3, 1), new Mission(4, 1), new Mission(3, 1),
-				new Mission(4, 1));
-		config.setRoles(new GoodGuy(), new GoodGuy(), new GoodGuy(), new GoodGuy(), new BadGuy(),
-				new BadGuy());
+		config.setMissions(new Mission(2, 1), new Mission(3, 1), new Mission(4,
+				1), new Mission(3, 1), new Mission(4, 1));
+		config.setRoles(new GoodGuy(), new GoodGuy(), new GoodGuy(),
+				new GoodGuy(), new BadGuy(), new BadGuy());
 		config.setPlayers(players);
 
-		game = new Game();
-		game.init(config);
+		game = config.create();
 	}
 
 	@Test

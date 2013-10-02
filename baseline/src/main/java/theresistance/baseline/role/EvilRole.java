@@ -1,4 +1,4 @@
-package theresistance.baseline;
+package theresistance.baseline.role;
 
 import theresistance.core.Alignment;
 import theresistance.core.Role;

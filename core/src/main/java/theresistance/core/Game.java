@@ -1,49 +1,83 @@
 package theresistance.core;
 
-import java.util.List;
 import java.util.Map;
 
-import theresistance.core.cls.ImplDetector;
 import theresistance.core.config.GameConfig;
-import theresistance.core.config.RoleAssigner;
 import theresistance.core.util.Arguments;
 
+/**
+ * A game of The Resistance. Use {@link GameConfig#create()} to create a new
+ * game.
+ */
 public class Game
 {
-	private Round[] rounds;
-	private Player[] players;
+	private final Round[] rounds;
+	private final Player[] players;
 	private Map<String, Object> extraInfo;
-	private List<PostRoundEventHandler> postRoundEventHandlers;
+	private final PostRoundEventHandler[] handlers;
 
 	int curRound = 0;
 
-	/**
-	 * initialize this game to start playing
-	 * 
-	 * @param config
-	 */
-	public void init(GameConfig config)
+	public Game(Player[] players, Round[] rounds,
+			PostRoundEventHandler[] handlers)
 	{
-		initRounds(config.getMissions());
-		new RoleAssigner().assign(config.getPlayers(), config.getRoles());
-		
-		this.players = config.getPlayers();
-		
-		ImplDetector<PostRoundEventHandler> postRoundEventHandlerDetector = new ImplDetector<>(PostRoundEventHandler.class);
-		this.postRoundEventHandlers = postRoundEventHandlerDetector.getDetected();
-		for (PostRoundEventHandler handler : postRoundEventHandlers) {
-			handler.init(this);
-		}
+		this.players = players;
+		this.rounds = rounds;
+		this.handlers = handlers;
 	}
 
-	private void initRounds(Mission[] missions)
+	/**
+	 * make the next proposal
+	 * 
+	 * @param participants
+	 * @return proposal
+	 */
+	public Proposal propose(Player... participants)
 	{
-		rounds = new Round[missions.length];
+		Arguments.verifyCount(getCurrentRound().getMission()
+				.getNumParticipants(), participants.length);
+		Proposal proposal = new Proposal(this.players.length);
+		proposal.setParticipants(participants);
 
-		for (int i = 0; i < missions.length; ++i)
+		getCurrentRound().addProposal(proposal);
+
+		return proposal;
+	}
+
+	/**
+	 * sends the proposal on the mission
+	 * 
+	 * @param proposal
+	 * @return mission
+	 */
+	public Mission send(Proposal proposal)
+	{
+		Mission mission = getCurrentRound().getMission();
+		mission.setParticipants(proposal.getParticipants());
+		return mission;
+	}
+
+	/**
+	 * progresses the game to the next round and calls the post round event
+	 * handlers.
+	 */
+	public void completeRound()
+	{
+		for (PostRoundEventHandler handler : handlers)
 		{
-			rounds[i] = new Round(i, missions[i]);
+			handler.roundFinished();
 		}
+		curRound++;
+	}
+
+	public Map<String, Object> getExtraInfo()
+	{
+		return extraInfo;
+	}
+
+	public void setExtraInfo(Map<String, Object> extraInfo)
+	{
+		this.extraInfo = extraInfo;
 	}
 
 	public Round[] getRounds()
@@ -64,56 +98,5 @@ public class Game
 	public Round getCurrentRound()
 	{
 		return rounds[curRound];
-	}
-
-	/**
-	 * make the next proposal
-	 * 
-	 * @param participants
-	 * @return proposal
-	 */
-	public Proposal propose(Player... participants)
-	{
-		Arguments.verifyCount(getCurrentRound().getMission().getNumParticipants(), participants.length);
-		Proposal proposal = new Proposal(this.players.length);
-		proposal.setParticipants(participants);
-
-		getCurrentRound().addProposal(proposal);
-
-		return proposal;
-	}
-
-	/**
-	 * sends the last proposal on the mission
-	 * 
-	 * @param proposal
-	 * @return mission
-	 */
-	public Mission send(Proposal proposal)
-	{
-		Mission mission = getCurrentRound().getMission();
-		mission.setParticipants(proposal.getParticipants());
-		return mission;
-	}
-
-	/**
-	 * progresses the game to the next round 
-	 * and calls the post round event handlers.
-	 */
-	public void completeRound()
-	{
-		for (PostRoundEventHandler handler : postRoundEventHandlers) 
-		{
-			handler.roundFinished();
-		}
-		curRound++;
-	}
-
-	public Map<String, Object> getExtraInfo() {
-		return extraInfo;
-	}
-
-	public void setExtraInfo(Map<String, Object> extraInfo) {
-		this.extraInfo = extraInfo;
 	}
 }

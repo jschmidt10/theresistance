@@ -1,7 +1,13 @@
-package theresistance.baseline;
+package theresistance.baseline.role;
 
 import org.junit.Assert;
 import org.junit.Test;
+
+import theresistance.baseline.role.Assassin;
+import theresistance.baseline.role.LoyalServant;
+import theresistance.baseline.role.Merlin;
+import theresistance.baseline.role.Minion;
+import theresistance.baseline.role.Mordred;
 
 public class MinionTest
 {
