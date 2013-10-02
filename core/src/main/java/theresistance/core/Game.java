@@ -1,9 +1,8 @@
 package theresistance.core;
 
-import java.util.Map;
-
 import theresistance.core.config.GameConfig;
 import theresistance.core.util.Arguments;
+import theresistance.core.util.ExtraInfoBag;
 
 /**
  * A game of The Resistance. Use {@link GameConfig#create()} to create a new
@@ -13,11 +12,11 @@ public class Game
 {
 	private final Round[] rounds;
 	private final Player[] players;
-	private Map<String, Object> extraInfo;
+	private ExtraInfoBag extraInfo;
 	private final PostRoundEventHandler[] handlers;
 
 	private int curRound = 0;
-	private Alignment winners;
+	private Alignment winners = Alignment.NEITHER;
 
 	public Game(Player[] players, Round[] rounds,
 			PostRoundEventHandler[] handlers)
@@ -87,12 +86,12 @@ public class Game
 		this.winners = winners;
 	}
 
-	public Map<String, Object> getExtraInfo()
+	public ExtraInfoBag getExtraInfo()
 	{
 		return extraInfo;
 	}
 
-	public void setExtraInfo(Map<String, Object> extraInfo)
+	public void setExtraInfo(ExtraInfoBag extraInfo)
 	{
 		this.extraInfo = extraInfo;
 	}
@@ -115,5 +114,10 @@ public class Game
 	public Round getCurrentRound()
 	{
 		return rounds[curRound];
+	}
+	
+	public PostRoundEventHandler[] getPostRoundEventHandlers() 
+	{
+		return this.handlers; 
 	}
 }

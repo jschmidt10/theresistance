@@ -1,8 +1,7 @@
 package theresistance.core;
 
-import java.util.Map;
-
 import theresistance.core.util.Arguments;
+import theresistance.core.util.ExtraInfoBag;
 
 /**
  * A mission
@@ -14,7 +13,7 @@ public class Mission
 		PASS, FAIL
 	}
 
-	private Map<String, Object> extraInfo;
+	private ExtraInfoBag extraInfo;
 	private final int numParticipants;
 	private final int requiredFails;
 	private Player[] participants;
@@ -83,12 +82,12 @@ public class Mission
 		return failCnt < requiredFails;
 	}
 
-	public Map<String, Object> getExtraInfo()
+	public ExtraInfoBag getExtraInfo()
 	{
 		return extraInfo;
 	}
 
-	public void setExtraInfo(Map<String, Object> extraInfo)
+	public void setExtraInfo(ExtraInfoBag extraInfo)
 	{
 		this.extraInfo = extraInfo;
 	}

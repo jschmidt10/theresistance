@@ -5,7 +5,7 @@ package theresistance.core;
  */
 public enum Alignment
 {
-	GOOD, EVIL;
+	NEITHER, GOOD, EVIL;
 
 	/**
 	 * @return true if this is a good role, false, otherwise

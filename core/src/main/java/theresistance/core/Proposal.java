@@ -4,6 +4,8 @@ import java.util.Collections;
 import java.util.Map;
 import java.util.TreeMap;
 
+import theresistance.core.util.ExtraInfoBag;
+
 /**
  * A mission proposal
  */
@@ -15,7 +17,7 @@ public class Proposal
 	}
 	
 	private Player leader;
-	private Map<String, Object> extraInfo;
+	private ExtraInfoBag extraInfo;
 	private int totalPlayers;
 	private Player[] participants;
 	private Map<Player, Vote> votes = new TreeMap<Player, Vote>();
@@ -69,12 +71,12 @@ public class Proposal
 		this.leader = leader;
 	}
 
-	public Map<String, Object> getExtraInfo() 
+	public ExtraInfoBag getExtraInfo() 
 	{
 		return extraInfo;
 	}
 
-	public void setExtraInfo(Map<String, Object> extraInfo) 
+	public void setExtraInfo(ExtraInfoBag extraInfo) 
 	{
 		this.extraInfo = extraInfo;
 	}

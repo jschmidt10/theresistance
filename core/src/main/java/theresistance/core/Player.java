@@ -1,6 +1,6 @@
 package theresistance.core;
 
-import java.util.Map;
+import theresistance.core.util.ExtraInfoBag;
 
 /**
  * A human player currently playing a game
@@ -9,7 +9,7 @@ public class Player implements Comparable<Player>
 {
 	private String name;
 	private Role role;
-	private Map<String, Object> extraInfo;
+	private ExtraInfoBag extraInfo;
 
 	public Player(String name)
 	{
@@ -56,12 +56,12 @@ public class Player implements Comparable<Player>
 		return name.hashCode();
 	}
 
-	public Map<String, Object> getExtraInfo() 
+	public ExtraInfoBag getExtraInfo() 
 	{
 		return extraInfo;
 	}
 
-	public void setExtraInfo(Map<String, Object> extraInfo) 
+	public void setExtraInfo(ExtraInfoBag extraInfo) 
 	{
 		this.extraInfo = extraInfo;
 	}
