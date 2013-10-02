@@ -13,10 +13,10 @@ public class Mission
 	{
 		PASS, FAIL
 	}
-	
+
 	private Map<String, Object> extraInfo;
-	private int numParticipants;
-	private int requiredFails;
+	private final int numParticipants;
+	private final int requiredFails;
 	private Player[] participants;
 	private Result[] results;
 
@@ -35,7 +35,8 @@ public class Mission
 	{
 		this.participants = participants;
 	}
-	public Player[] getParticipants() 
+
+	public Player[] getParticipants()
 	{
 		return participants;
 	}
@@ -52,6 +53,14 @@ public class Mission
 	{
 		Arguments.verifyCount(numParticipants, results.length);
 		this.results = results;
+	}
+
+	/**
+	 * @return true is this mission has been sent, false, otherwise
+	 */
+	public boolean isSent()
+	{
+		return results != null;
 	}
 
 	/**
@@ -74,11 +83,13 @@ public class Mission
 		return failCnt < requiredFails;
 	}
 
-	public Map<String, Object> getExtraInfo() {
+	public Map<String, Object> getExtraInfo()
+	{
 		return extraInfo;
 	}
 
-	public void setExtraInfo(Map<String, Object> extraInfo) {
+	public void setExtraInfo(Map<String, Object> extraInfo)
+	{
 		this.extraInfo = extraInfo;
 	}
 }

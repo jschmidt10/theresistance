@@ -16,7 +16,8 @@ public class Game
 	private Map<String, Object> extraInfo;
 	private final PostRoundEventHandler[] handlers;
 
-	int curRound = 0;
+	private int curRound = 0;
+	private Alignment winners;
 
 	public Game(Player[] players, Round[] rounds,
 			PostRoundEventHandler[] handlers)
@@ -67,7 +68,23 @@ public class Game
 		{
 			handler.roundFinished();
 		}
+
 		curRound++;
+	}
+
+	public boolean isOver()
+	{
+		return winners != null;
+	}
+
+	public Alignment getWinners()
+	{
+		return winners;
+	}
+
+	public void setWinners(Alignment winners)
+	{
+		this.winners = winners;
 	}
 
 	public Map<String, Object> getExtraInfo()
