@@ -12,7 +12,7 @@ public class Game
 {
 	private final Round[] rounds;
 	private final Player[] players;
-	private ExtraInfoBag extraInfo;
+	private ExtraInfoBag extraInfo = new ExtraInfoBag();
 	private final PostRoundEventHandler[] handlers;
 
 	private int curRound = 0;
@@ -25,7 +25,7 @@ public class Game
 		this.rounds = rounds;
 		this.handlers = handlers;
 	}
-
+	
 	/**
 	 * make the next proposal
 	 * 
@@ -73,7 +73,7 @@ public class Game
 
 	public boolean isOver()
 	{
-		return winners != null;
+		return winners != Alignment.NEITHER;
 	}
 
 	public Alignment getWinners()

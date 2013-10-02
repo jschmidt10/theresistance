@@ -13,7 +13,7 @@ public class Mission
 		PASS, FAIL
 	}
 
-	private ExtraInfoBag extraInfo;
+	private ExtraInfoBag extraInfo = new ExtraInfoBag();
 	private final int numParticipants;
 	private final int requiredFails;
 	private Player[] participants;

@@ -13,7 +13,7 @@ import theresistance.core.Player;
 import theresistance.core.Proposal;
 import theresistance.core.config.GameConfig;
 
-public class VictoryHandlerTest
+public class RoundVictoryHandlerTest
 {
 	private Game game;
 	private final Player p1 = new Player("p1");
@@ -27,7 +27,7 @@ public class VictoryHandlerTest
 				1));
 		config.setPlayers(p1, p2);
 		config.setRoles(new LoyalServant(), new Minion());
-		config.setHandlers(new VictoryHandler());
+		config.setHandlers(new RoundVictoryHandler());
 
 		game = config.create();
 	}

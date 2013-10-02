@@ -17,7 +17,7 @@ public class Proposal
 	}
 	
 	private Player leader;
-	private ExtraInfoBag extraInfo;
+	private ExtraInfoBag extraInfo = new ExtraInfoBag();
 	private int totalPlayers;
 	private Player[] participants;
 	private Map<Player, Vote> votes = new TreeMap<Player, Vote>();

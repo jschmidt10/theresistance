@@ -14,4 +14,9 @@ public enum Alignment
 	{
 		return GOOD.equals(this);
 	}
+	
+	public boolean isEvil()
+	{
+		return EVIL.equals(this);
+	}
 }

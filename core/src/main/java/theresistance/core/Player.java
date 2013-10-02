@@ -9,7 +9,7 @@ public class Player implements Comparable<Player>
 {
 	private String name;
 	private Role role;
-	private ExtraInfoBag extraInfo;
+	private ExtraInfoBag extraInfo = new ExtraInfoBag();
 
 	public Player(String name)
 	{

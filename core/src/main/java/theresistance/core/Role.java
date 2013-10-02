@@ -17,4 +17,5 @@ public interface Role
 	 * @return alignment of the role
 	 */
 	Alignment getAlignment();
+	
 }
