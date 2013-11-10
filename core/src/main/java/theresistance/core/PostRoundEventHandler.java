@@ -6,6 +6,11 @@ package theresistance.core;
 public interface PostRoundEventHandler
 {
 	/**
+	 * @return Human friendly readable description of this rule
+	 */
+	public String getRuleName();
+
+	/**
 	 * initialize the handler
 	 * 
 	 * @param game

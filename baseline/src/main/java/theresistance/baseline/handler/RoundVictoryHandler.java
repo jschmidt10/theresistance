@@ -11,12 +11,18 @@ import theresistance.core.Round;
  * rounds won)
  */
 public class RoundVictoryHandler implements PostRoundEventHandler
-{	
+{
 	private static final int GOOD_INDEX = 0;
 	private static final int EVIL_INDEX = 1;
 
 	private Game game;
 	private int numWins;
+
+	@Override
+	public String getRuleName()
+	{
+		return "General Victory";
+	}
 
 	@Override
 	public void init(Game game)
@@ -29,7 +35,8 @@ public class RoundVictoryHandler implements PostRoundEventHandler
 	public void roundFinished()
 	{
 		Alignment winner = getWinner();
-		if (winner != Alignment.NEITHER) {
+		if (winner != Alignment.NEITHER)
+		{
 			game.setWinners(winner);
 		}
 	}
@@ -46,7 +53,7 @@ public class RoundVictoryHandler implements PostRoundEventHandler
 		{
 			return Alignment.EVIL;
 		}
-		
+
 		return Alignment.NEITHER;
 	}
 

@@ -1,5 +1,6 @@
 package theresistance.core.cls;
 
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.ServiceLoader;
@@ -19,6 +20,8 @@ public class ImplDetector<T>
 		{
 			detected.add(elem);
 		}
+
+		detected = Collections.unmodifiableList(detected);
 	}
 
 	public List<T> getDetected()
