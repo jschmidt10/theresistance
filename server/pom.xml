@@ -49,5 +49,10 @@
 			<artifactId>jackson-mapper-asl</artifactId>
 			<version>1.8.5</version>
 		</dependency>
+		<dependency>
+			<groupId>theresistance</groupId>
+			<artifactId>baseline</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
+		</dependency>
 	</dependencies>
 </project>

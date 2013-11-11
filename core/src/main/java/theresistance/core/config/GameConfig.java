@@ -12,10 +12,21 @@ import theresistance.core.Round;
  */
 public class GameConfig
 {
+	private String owner;
 	private Player[] players;
 	private Role[] roles;
 	private Mission[] missions;
 	private PostRoundEventHandler[] handlers = new PostRoundEventHandler[0];
+
+	public String getOwner()
+	{
+		return owner;
+	}
+
+	public void setOwner(String owner)
+	{
+		this.owner = owner;
+	}
 
 	public Player[] getPlayers()
 	{
