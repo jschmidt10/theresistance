@@ -2,7 +2,7 @@ Ext.onReady(function() {
 	Ext.create('Ext.container.Viewport', {
 		layout: {
 			type: 'hbox',
-			align: 'stetch'
+			align: 'stretch'
 		},
 		items: [{
 			xtype: 'panel',
