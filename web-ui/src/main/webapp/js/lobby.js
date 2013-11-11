@@ -47,7 +47,6 @@ Ext.onReady(function() {
 							url: '/server/rules',
 							success: function(response) {
 								var rules = Ext.JSON.decode(response.responseText);
-								console.debug("Adding: " + response.responseText);
 								var rulesConfig = [];
 								Ext.Array.each(rules, function(rule) {
 									Ext.Array.push(rulesConfig, {
@@ -224,10 +223,7 @@ Ext.onReady(function() {
 					store: {
 						storeId: 'gamesStore',
 			    		fields: ['owner', 'gameId', 'currentPlayers', 'totalPlayers'],
-			    		proxy: {
-			    			type: 'ajax',
-			    			url: '/server/newgames'
-			    		}
+			    		data: [{ owner: 'andrew', gameId: 'abc', currentPlayers: 1, totalPlayers: 5  }]
 			    	}
 				}, {
 					xtype: 'grid',
@@ -240,8 +236,32 @@ Ext.onReady(function() {
 	
 	var loadGamesTask = {};
 	loadGamesTask.task = new Ext.util.DelayedTask(function() {
-		Ext.StoreManager.lookup('gamesStore').load({
-			callback: function() {
+		var gamesStore = Ext.StoreManager.lookup('gamesStore');
+		Ext.Ajax.request({
+			url: '/server/newgames',
+			success: function(response) {
+				var games = Ext.JSON.decode(response.responseText);
+				var gamesExist = {};
+				Ext.Array.each(games, function(game) {
+					var existing = gamesStore.findRecord('gameId', game.gameId);
+					gamesExist[game.gameId] = true;
+					if (existing == null) {
+						gamesStore.loadData([game], true);
+					} else {
+						if (existing.get('currentPlayers') != game.currentPlayers) {
+							existing.set('currentPlayers', game.currentPlayers);
+						}
+					}
+				});
+				var remove = [];
+				gamesStore.each(function(game) {
+					if (!(game.get('gameId') in gamesExist)) {
+						Ext.Array.push(remove, game);
+					}
+				});
+				if (remove.length > 0) {
+					gamesStore.remove(remove);
+				}
 				loadGamesTask.task.delay(1000);
 			}
 		});
