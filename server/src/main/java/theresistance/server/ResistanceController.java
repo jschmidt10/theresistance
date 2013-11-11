@@ -1,15 +1,19 @@
 package theresistance.server;
 
 import java.util.Collection;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
+import org.codehaus.jackson.map.ObjectMapper;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import theresistance.baseline.handler.AssassinVictoryHandler;
+import theresistance.baseline.role.Merlin;
 import theresistance.core.Mission;
 import theresistance.core.PostRoundEventHandler;
 import theresistance.core.Role;
@@ -80,9 +84,16 @@ public class ResistanceController
 
 	@RequestMapping(value = "newgames", produces = "application/json")
 	@ResponseBody
-	public Collection<GameConfig> getNewGames()
+	public Collection<LobbyView> getNewGames()
 	{
-		return registry.getNewGames();
+		List<LobbyView> views = new LinkedList<>();
+
+		for (GameConfig config : registry.getNewGames())
+		{
+			views.add(new LobbyView(config));
+		}
+
+		return views;
 	}
 
 	private PostRoundEventHandler[] toHandlerConfig(List<String> names)
@@ -119,5 +130,16 @@ public class ResistanceController
 		}
 
 		return arr;
+	}
+
+	public static void main(String[] args) throws Exception
+	{
+		GameConfig config = new GameConfig();
+		config.setHandlers(new AssassinVictoryHandler());
+		config.setMissions(new Mission(1, 1));
+		config.setOwner("jeff");
+		config.setRoles(new Merlin());
+
+		System.out.println(new ObjectMapper().writeValueAsString(config));
 	}
 }

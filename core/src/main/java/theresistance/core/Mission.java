@@ -1,7 +1,9 @@
 package theresistance.core;
 
+import java.util.LinkedList;
+import java.util.List;
+
 import theresistance.core.util.Arguments;
-import theresistance.core.util.ExtraInfoBag;
 
 /**
  * A mission
@@ -13,11 +15,10 @@ public class Mission
 		PASS, FAIL
 	}
 
-	private ExtraInfoBag extraInfo = new ExtraInfoBag();
 	private final int numParticipants;
 	private final int requiredFails;
-	private Player[] participants;
-	private Result[] results;
+	private List<Player> participants = new LinkedList<>();
+	private List<Result> results = new LinkedList<>();
 
 	public Mission(int numParticipants, int requiredFails)
 	{
@@ -30,12 +31,12 @@ public class Mission
 		return numParticipants;
 	}
 
-	public void setParticipants(Player[] participants)
+	public void setParticipants(List<Player> participants)
 	{
 		this.participants = participants;
 	}
 
-	public Player[] getParticipants()
+	public List<Player> getParticipants()
 	{
 		return participants;
 	}
@@ -48,9 +49,9 @@ public class Mission
 	 *             when the number of results differs from the number of
 	 *             participants
 	 */
-	public void setResults(Result... results)
+	public void setResults(List<Result> results)
 	{
-		Arguments.verifyCount(numParticipants, results.length);
+		Arguments.verifyCount(numParticipants, results.size());
 		this.results = results;
 	}
 
@@ -59,7 +60,7 @@ public class Mission
 	 */
 	public boolean isSent()
 	{
-		return results != null;
+		return !results.isEmpty();
 	}
 
 	/**
@@ -79,16 +80,6 @@ public class Mission
 			}
 		}
 
-		return failCnt < requiredFails;
-	}
-
-	public ExtraInfoBag getExtraInfo()
-	{
-		return extraInfo;
-	}
-
-	public void setExtraInfo(ExtraInfoBag extraInfo)
-	{
-		this.extraInfo = extraInfo;
+		return !results.isEmpty() && failCnt < requiredFails;
 	}
 }

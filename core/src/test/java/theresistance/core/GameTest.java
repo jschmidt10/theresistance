@@ -1,5 +1,7 @@
 package theresistance.core;
 
+import java.util.Arrays;
+
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -18,17 +20,20 @@ public class GameTest
 	@Before
 	public void setup()
 	{
-		players = new Player[] { new Player("p1"), new Player("p2"),
-				new Player("p3"), new Player("p4"), new Player("p5"),
-				new Player("p6") };
+		players = new Player[] { new Player("p1"), new Player("p2"), new Player("p3"), new Player("p4"),
+				new Player("p5"), new Player("p6") };
 
 		GameConfig config = new GameConfig();
 
-		config.setMissions(new Mission(2, 1), new Mission(3, 1), new Mission(4,
-				1), new Mission(3, 1), new Mission(4, 1));
-		config.setRoles(new GoodGuy(), new GoodGuy(), new GoodGuy(),
-				new GoodGuy(), new BadGuy(), new BadGuy());
-		config.setPlayers(players);
+		config.setMissions(new Mission(2, 1), new Mission(3, 1), new Mission(4, 1), new Mission(3, 1),
+				new Mission(4, 1));
+		config.setRoles(new GoodGuy(), new GoodGuy(), new GoodGuy(), new GoodGuy(), new BadGuy(),
+				new BadGuy());
+
+		for (Player player : players)
+		{
+			config.addPlayer(player);
+		}
 
 		game = config.create();
 	}
@@ -72,7 +77,7 @@ public class GameTest
 		Assert.assertTrue(proposal.isApproved());
 
 		Mission mission = game.send(proposal);
-		mission.setResults(Result.PASS, Result.PASS);
+		mission.setResults(Arrays.asList(Result.PASS, Result.PASS));
 
 		game.completeRound();
 

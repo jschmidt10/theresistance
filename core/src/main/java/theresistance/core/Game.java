@@ -1,5 +1,7 @@
 package theresistance.core;
 
+import java.util.Arrays;
+
 import theresistance.core.config.GameConfig;
 import theresistance.core.util.Arguments;
 import theresistance.core.util.ExtraInfoBag;
@@ -18,14 +20,13 @@ public class Game
 	private int curRound = 0;
 	private Alignment winners = Alignment.NEITHER;
 
-	public Game(Player[] players, Round[] rounds,
-			PostRoundEventHandler[] handlers)
+	public Game(Player[] players, Round[] rounds, PostRoundEventHandler[] handlers)
 	{
 		this.players = players;
 		this.rounds = rounds;
 		this.handlers = handlers;
 	}
-	
+
 	/**
 	 * make the next proposal
 	 * 
@@ -34,8 +35,7 @@ public class Game
 	 */
 	public Proposal propose(Player... participants)
 	{
-		Arguments.verifyCount(getCurrentRound().getMission()
-				.getNumParticipants(), participants.length);
+		Arguments.verifyCount(getCurrentRound().getMission().getNumParticipants(), participants.length);
 		Proposal proposal = new Proposal(this.players.length);
 		proposal.setParticipants(participants);
 
@@ -53,7 +53,7 @@ public class Game
 	public Mission send(Proposal proposal)
 	{
 		Mission mission = getCurrentRound().getMission();
-		mission.setParticipants(proposal.getParticipants());
+		mission.setParticipants(Arrays.asList(proposal.getParticipants()));
 		return mission;
 	}
 
@@ -115,9 +115,9 @@ public class Game
 	{
 		return rounds[curRound];
 	}
-	
-	public PostRoundEventHandler[] getPostRoundEventHandlers() 
+
+	public PostRoundEventHandler[] getPostRoundEventHandlers()
 	{
-		return this.handlers; 
+		return this.handlers;
 	}
 }

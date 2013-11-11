@@ -1,5 +1,8 @@
 package theresistance.core.config;
 
+import java.util.LinkedList;
+import java.util.List;
+
 import theresistance.core.Game;
 import theresistance.core.Mission;
 import theresistance.core.Player;
@@ -12,11 +15,22 @@ import theresistance.core.Round;
  */
 public class GameConfig
 {
+	private String id;
 	private String owner;
-	private Player[] players;
+	private List<Player> players = new LinkedList<Player>();
 	private Role[] roles;
 	private Mission[] missions;
 	private PostRoundEventHandler[] handlers = new PostRoundEventHandler[0];
+
+	public String getId()
+	{
+		return id;
+	}
+
+	public void setId(String id)
+	{
+		this.id = id;
+	}
 
 	public String getOwner()
 	{
@@ -28,14 +42,14 @@ public class GameConfig
 		this.owner = owner;
 	}
 
-	public Player[] getPlayers()
+	public List<Player> getPlayers()
 	{
 		return players;
 	}
 
-	public void setPlayers(Player... players)
+	public void addPlayer(Player player)
 	{
-		this.players = players;
+		players.add(player);
 	}
 
 	public Role[] getRoles()
@@ -81,6 +95,9 @@ public class GameConfig
 		{
 			rounds[i] = new Round(i, missions[i]);
 		}
+
+		// TODO: might want to handle this better
+		Player[] players = this.players.toArray(new Player[this.players.size()]);
 
 		new RoleAssigner().assign(players, roles);
 

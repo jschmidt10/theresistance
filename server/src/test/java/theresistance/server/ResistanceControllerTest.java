@@ -20,8 +20,6 @@ public class ResistanceControllerTest
 	public void testListRoles()
 	{
 		Map<String, String> roles = controller.getAvailableRoles();
-
-		Assert.assertEquals(2, roles.size());
 		assertMapEntry(roles, "theresistance.server.stub.GoodGuy", "GoodGuy");
 		assertMapEntry(roles, "theresistance.server.stub.BadGuy", "BadGuy");
 	}
@@ -30,8 +28,6 @@ public class ResistanceControllerTest
 	public void testListRules()
 	{
 		Map<String, String> rules = controller.getAvailableRules();
-
-		Assert.assertEquals(1, rules.size());
 		assertMapEntry(rules, "theresistance.server.stub.DummyRule1", "DummyRule1");
 	}
 

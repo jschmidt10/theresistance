@@ -1,5 +1,7 @@
 package theresistance.core;
 
+import java.util.Arrays;
+
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -11,7 +13,7 @@ public class MissionTest
 	public void testFailedMission()
 	{
 		Mission mission = new Mission(5, 1);
-		mission.setResults(Result.PASS, Result.PASS, Result.PASS, Result.FAIL, Result.FAIL);
+		mission.setResults(Arrays.asList(Result.PASS, Result.PASS, Result.PASS, Result.FAIL, Result.FAIL));
 
 		Assert.assertFalse(mission.isSuccess());
 	}
@@ -20,7 +22,7 @@ public class MissionTest
 	public void testNotEnoughFails()
 	{
 		Mission mission = new Mission(5, 2);
-		mission.setResults(Result.PASS, Result.PASS, Result.PASS, Result.PASS, Result.FAIL);
+		mission.setResults(Arrays.asList(Result.PASS, Result.PASS, Result.PASS, Result.PASS, Result.FAIL));
 
 		Assert.assertTrue(mission.isSuccess());
 	}
@@ -29,6 +31,6 @@ public class MissionTest
 	public void testWrongNumberOfResults()
 	{
 		Mission mission = new Mission(5, 2);
-		mission.setResults(Result.PASS, Result.PASS, Result.PASS, Result.PASS);
+		mission.setResults(Arrays.asList(Result.PASS, Result.PASS, Result.PASS, Result.PASS));
 	}
 }

@@ -15,12 +15,12 @@ public class Proposal
 	{
 		SEND, DONT_SEND
 	}
-	
+
 	private Player leader;
 	private ExtraInfoBag extraInfo = new ExtraInfoBag();
 	private int totalPlayers;
 	private Player[] participants;
-	private Map<Player, Vote> votes = new TreeMap<Player, Vote>();
+	private Map<Player, Vote> votes = new TreeMap<>();
 
 	public Proposal(int totalPlayers)
 	{
@@ -62,21 +62,22 @@ public class Proposal
 		return Collections.unmodifiableMap(votes);
 	}
 
-	public Player getLeader() {
+	public Player getLeader()
+	{
 		return leader;
 	}
 
-	public void setLeader(Player leader) 
+	public void setLeader(Player leader)
 	{
 		this.leader = leader;
 	}
 
-	public ExtraInfoBag getExtraInfo() 
+	public ExtraInfoBag getExtraInfo()
 	{
 		return extraInfo;
 	}
 
-	public void setExtraInfo(ExtraInfoBag extraInfo) 
+	public void setExtraInfo(ExtraInfoBag extraInfo)
 	{
 		this.extraInfo = extraInfo;
 	}
