@@ -44,6 +44,9 @@ public class GameRegistry
 		while (usedIds.contains(id));
 
 		configs.put(id, config);
+		config.setId(id);
+
+		usedIds.add(id);
 
 		return id;
 	}

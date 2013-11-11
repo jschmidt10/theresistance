@@ -1,5 +1,7 @@
 package theresistance.baseline.handler;
 
+import java.util.Collections;
+
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -23,9 +25,9 @@ public class RoundVictoryHandlerTest
 	public void setup()
 	{
 		GameConfig config = new GameConfig();
-		config.setMissions(new Mission(1, 1), new Mission(1, 1), new Mission(1,
-				1));
-		config.setPlayers(p1, p2);
+		config.setMissions(new Mission(1, 1), new Mission(1, 1), new Mission(1, 1));
+		config.addPlayer(p1);
+		config.addPlayer(p2);
 		config.setRoles(new LoyalServant(), new Minion());
 		config.setHandlers(new RoundVictoryHandler());
 
@@ -37,14 +39,14 @@ public class RoundVictoryHandlerTest
 	{
 		Proposal proposal = game.propose(p1);
 		Mission mission = game.send(proposal);
-		mission.setResults(Result.PASS);
+		mission.setResults(Collections.singletonList(Result.PASS));
 		game.completeRound();
 
 		Assert.assertFalse(game.isOver());
 
 		proposal = game.propose(p1);
 		mission = game.send(proposal);
-		mission.setResults(Result.PASS);
+		mission.setResults(Collections.singletonList(Result.PASS));
 		game.completeRound();
 
 		Assert.assertTrue(game.isOver());
