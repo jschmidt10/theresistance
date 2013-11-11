@@ -50,4 +50,13 @@ public class GameRegistry
 
 		return id;
 	}
+
+	/**
+	 * @param gameId
+	 * @return game config
+	 */
+	public synchronized GameConfig getGameConfig(String gameId)
+	{
+		return configs.get(gameId);
+	}
 }

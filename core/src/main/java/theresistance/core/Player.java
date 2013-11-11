@@ -16,6 +16,11 @@ public class Player implements Comparable<Player>
 		this.name = name;
 	}
 
+	public String getName()
+	{
+		return name;
+	}
+
 	public void setRole(Role role)
 	{
 		this.role = role;
@@ -56,12 +61,12 @@ public class Player implements Comparable<Player>
 		return name.hashCode();
 	}
 
-	public ExtraInfoBag getExtraInfo() 
+	public ExtraInfoBag getExtraInfo()
 	{
 		return extraInfo;
 	}
 
-	public void setExtraInfo(ExtraInfoBag extraInfo) 
+	public void setExtraInfo(ExtraInfoBag extraInfo)
 	{
 		this.extraInfo = extraInfo;
 	}

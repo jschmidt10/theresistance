@@ -6,19 +6,20 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
-import org.codehaus.jackson.map.ObjectMapper;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import theresistance.baseline.handler.AssassinVictoryHandler;
-import theresistance.baseline.role.Merlin;
 import theresistance.core.Mission;
+import theresistance.core.Player;
 import theresistance.core.PostRoundEventHandler;
 import theresistance.core.Role;
 import theresistance.core.cls.ImplDetector;
 import theresistance.core.config.GameConfig;
+import theresistance.server.view.LobbyView;
+import theresistance.server.view.OptionView;
+import theresistance.server.view.PlayerView;
 
 /**
  * Controller for all game based interactions
@@ -26,9 +27,9 @@ import theresistance.core.config.GameConfig;
 @Controller
 public class ResistanceController
 {
-	private static final Map<String, String> ROLE_NAMES = new TreeMap<>();
+	private static final List<OptionView> ROLE_NAMES = new LinkedList<>();
 	private static final Map<String, Role> ROLES = new TreeMap<>();
-	private static final Map<String, String> RULE_NAMES = new TreeMap<>();
+	private static final List<OptionView> RULE_NAMES = new LinkedList<>();
 	private static final Map<String, PostRoundEventHandler> RULES = new TreeMap<>();
 
 	static
@@ -36,14 +37,14 @@ public class ResistanceController
 		for (Role role : new ImplDetector<>(Role.class).getDetected())
 		{
 			String name = role.getClass().getName();
-			ROLE_NAMES.put(name, role.getClass().getSimpleName());
+			ROLE_NAMES.add(new OptionView(name, role.getClass().getSimpleName()));
 			ROLES.put(name, role);
 		}
 
 		for (PostRoundEventHandler handler : new ImplDetector<>(PostRoundEventHandler.class).getDetected())
 		{
 			String name = handler.getClass().getName();
-			RULE_NAMES.put(name, handler.getRuleName());
+			RULE_NAMES.add(new OptionView(name, handler.getRuleName()));
 			RULES.put(name, handler);
 		}
 	}
@@ -52,14 +53,14 @@ public class ResistanceController
 
 	@RequestMapping(value = "rules", produces = "application/json")
 	@ResponseBody
-	public Map<String, String> getAvailableRules()
+	public List<OptionView> getAvailableRules()
 	{
 		return RULE_NAMES;
 	}
 
 	@RequestMapping(value = "roles", produces = "application/json")
 	@ResponseBody
-	public Map<String, String> getAvailableRoles()
+	public List<OptionView> getAvailableRoles()
 	{
 		return ROLE_NAMES;
 	}
@@ -96,6 +97,31 @@ public class ResistanceController
 		return views;
 	}
 
+	@RequestMapping(value = "players", produces = "application/json")
+	@ResponseBody
+	public List<PlayerView> getPlayers(@RequestParam String gameId)
+	{
+		GameConfig config = registry.getGameConfig(gameId);
+		List<PlayerView> views = new LinkedList<PlayerView>();
+
+		for (Player player : config.getPlayers())
+		{
+			views.add(new PlayerView(player));
+		}
+
+		return views;
+	}
+
+	@RequestMapping(value = "join", produces = "application/json")
+	@ResponseBody
+	public StatusResponse joinGame(@RequestParam String gameId, @RequestParam String player)
+	{
+		GameConfig config = registry.getGameConfig(gameId);
+		config.addPlayer(new Player(player));
+
+		return StatusResponse.success(gameId);
+	}
+
 	private PostRoundEventHandler[] toHandlerConfig(List<String> names)
 	{
 		PostRoundEventHandler[] handlers = new PostRoundEventHandler[names.size()];
@@ -130,16 +156,5 @@ public class ResistanceController
 		}
 
 		return arr;
-	}
-
-	public static void main(String[] args) throws Exception
-	{
-		GameConfig config = new GameConfig();
-		config.setHandlers(new AssassinVictoryHandler());
-		config.setMissions(new Mission(1, 1));
-		config.setOwner("jeff");
-		config.setRoles(new Merlin());
-
-		System.out.println(new ObjectMapper().writeValueAsString(config));
 	}
 }

@@ -1,4 +1,4 @@
-package theresistance.server;
+package theresistance.server.view;
 
 import theresistance.core.config.GameConfig;
 
