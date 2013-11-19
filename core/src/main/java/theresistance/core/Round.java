@@ -1,6 +1,7 @@
 package theresistance.core;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -12,7 +13,9 @@ public class Round
 
 	private int index;
 	private Mission mission;
-	private List<Proposal> proposals = new ArrayList<Proposal>(NUM_PROPOSALS);
+	private List<Proposal> proposals = new ArrayList<>(NUM_PROPOSALS);
+	private List<Player> participants = new LinkedList<>();
+	private List<Mission.Result> results = new LinkedList<>();
 
 	public Round(int index, Mission mission)
 	{
@@ -25,6 +28,26 @@ public class Round
 		return index;
 	}
 
+	public void setParticipants(List<Player> participants)
+	{
+		this.participants = participants;
+	}
+
+	public List<Player> getParticipants()
+	{
+		return participants;
+	}
+
+	public void setResults(List<Mission.Result> results)
+	{
+		this.results = results;
+	}
+
+	public List<Mission.Result> getResults()
+	{
+		return results;
+	}
+
 	public Mission getMission()
 	{
 		return mission;
@@ -33,5 +56,25 @@ public class Round
 	public void addProposal(Proposal proposal)
 	{
 		proposals.add(proposal);
+	}
+
+	public boolean isFinished()
+	{
+		return !results.isEmpty();
+	}
+
+	public boolean isSuccess()
+	{
+		int failCnt = 0;
+
+		for (Mission.Result result : results)
+		{
+			if (Mission.Result.FAIL.equals(result))
+			{
+				failCnt++;
+			}
+		}
+
+		return failCnt < mission.getRequiredFails();
 	}
 }

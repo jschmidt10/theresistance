@@ -8,7 +8,6 @@ import org.junit.Test;
 
 import theresistance.core.Mission.Result;
 import theresistance.core.Proposal.Vote;
-import theresistance.core.config.GameConfig;
 import theresistance.core.stub.BadGuy;
 import theresistance.core.stub.GoodGuy;
 
@@ -25,17 +24,19 @@ public class GameTest
 
 		GameConfig config = new GameConfig();
 
-		config.setMissions(new Mission(2, 1), new Mission(3, 1), new Mission(4, 1), new Mission(3, 1),
-				new Mission(4, 1));
-		config.setRoles(new GoodGuy(), new GoodGuy(), new GoodGuy(), new GoodGuy(), new BadGuy(),
-				new BadGuy());
+		config.setMissions(Arrays.asList(new Mission(2, 1), new Mission(3, 1), new Mission(4, 1),
+				new Mission(3, 1), new Mission(4, 1)));
+		config.setRoles(Arrays.asList(new GoodGuy(), new GoodGuy(), new GoodGuy(), new GoodGuy(),
+				new BadGuy(), new BadGuy()));
+
+		game = new Game(config);
 
 		for (Player player : players)
 		{
-			config.addPlayer(player);
+			game.addPlayer(player);
 		}
 
-		game = config.create();
+		game.start();
 	}
 
 	@Test
@@ -66,7 +67,7 @@ public class GameTest
 	@Test
 	public void testSendAMission_thenProgressCurrentRound()
 	{
-		Proposal proposal = game.propose(players[0], players[1]);
+		Proposal proposal = game.propose(Arrays.asList(players[0], players[1]));
 		proposal.setVote(players[0], Vote.SEND);
 		proposal.setVote(players[1], Vote.SEND);
 		proposal.setVote(players[2], Vote.SEND);
@@ -76,18 +77,12 @@ public class GameTest
 
 		Assert.assertTrue(proposal.isApproved());
 
-		Mission mission = game.send(proposal);
-		mission.setResults(Arrays.asList(Result.PASS, Result.PASS));
+		Round round = game.send(proposal);
+		round.setResults(Arrays.asList(Result.PASS, Result.PASS));
 
 		game.completeRound();
 
 		Round nextRound = game.getCurrentRound();
 		Assert.assertEquals(1, nextRound.getIndex());
-	}
-
-	@Test(expected = IllegalArgumentException.class)
-	public void testProposingTheWrongNumberOfPlayers()
-	{
-		game.propose(players[0], players[1], players[2]);
 	}
 }

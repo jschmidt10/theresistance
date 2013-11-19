@@ -1,30 +1,82 @@
 package theresistance.core;
 
-import java.util.Arrays;
+import java.util.LinkedList;
+import java.util.List;
 
-import theresistance.core.config.GameConfig;
-import theresistance.core.util.Arguments;
 import theresistance.core.util.ExtraInfoBag;
 
 /**
- * A game of The Resistance. Use {@link GameConfig#create()} to create a new
- * game.
+ * A game of The Resistance.
  */
 public class Game
 {
-	private final Round[] rounds;
-	private final Player[] players;
-	private ExtraInfoBag extraInfo = new ExtraInfoBag();
-	private final PostRoundEventHandler[] handlers;
+	private String id;
+	private final GameConfig config;
+	private final List<Round> rounds = new LinkedList<>();
+	private final List<Player> players = new LinkedList<>();
 
+	private ExtraInfoBag extraInfo = new ExtraInfoBag();
+
+	private boolean isStarted = false;
 	private int curRound = 0;
 	private Alignment winners = Alignment.NEITHER;
 
-	public Game(Player[] players, Round[] rounds, PostRoundEventHandler[] handlers)
+	public Game(GameConfig config)
 	{
-		this.players = players;
-		this.rounds = rounds;
-		this.handlers = handlers;
+		this.config = config;
+	}
+
+	public void setId(String id)
+	{
+		this.id = id;
+	}
+
+	public String getId()
+	{
+		return id;
+	}
+
+	public GameConfig getConfig()
+	{
+		return config;
+	}
+
+	/**
+	 * Adds a new player to the game
+	 * 
+	 * @param player
+	 */
+	public void addPlayer(Player player)
+	{
+		players.add(player);
+	}
+
+	/**
+	 * initializes the game and prepares for play
+	 */
+	public void start()
+	{
+		new RoleAssigner().assign(players, config.getRoles());
+
+		for (Mission mission : config.getMissions())
+		{
+			rounds.add(new Round(rounds.size(), mission));
+		}
+
+		for (PostRoundEventHandler handler : config.getHandlers())
+		{
+			handler.init(this);
+		}
+
+		isStarted = true;
+	}
+
+	/**
+	 * @return true if the game has already started, false, otherwise
+	 */
+	public boolean isStarted()
+	{
+		return isStarted;
 	}
 
 	/**
@@ -33,10 +85,9 @@ public class Game
 	 * @param participants
 	 * @return proposal
 	 */
-	public Proposal propose(Player... participants)
+	public Proposal propose(List<Player> participants)
 	{
-		Arguments.verifyCount(getCurrentRound().getMission().getNumParticipants(), participants.length);
-		Proposal proposal = new Proposal(this.players.length);
+		Proposal proposal = new Proposal(getNumPlayers());
 		proposal.setParticipants(participants);
 
 		getCurrentRound().addProposal(proposal);
@@ -50,11 +101,11 @@ public class Game
 	 * @param proposal
 	 * @return mission
 	 */
-	public Mission send(Proposal proposal)
+	public Round send(Proposal proposal)
 	{
-		Mission mission = getCurrentRound().getMission();
-		mission.setParticipants(Arrays.asList(proposal.getParticipants()));
-		return mission;
+		Round curRound = getCurrentRound();
+		curRound.setParticipants(proposal.getParticipants());
+		return curRound;
 	}
 
 	/**
@@ -63,7 +114,7 @@ public class Game
 	 */
 	public void completeRound()
 	{
-		for (PostRoundEventHandler handler : handlers)
+		for (PostRoundEventHandler handler : config.getHandlers())
 		{
 			handler.roundFinished();
 		}
@@ -96,28 +147,28 @@ public class Game
 		this.extraInfo = extraInfo;
 	}
 
-	public Round[] getRounds()
+	public List<Round> getRounds()
 	{
 		return rounds;
 	}
 
-	public Player[] getPlayers()
+	public List<Player> getPlayers()
 	{
 		return players;
 	}
 
 	public int getNumPlayers()
 	{
-		return players.length;
+		return players.size();
 	}
 
 	public Round getCurrentRound()
 	{
-		return rounds[curRound];
+		return rounds.get(curRound);
 	}
 
-	public PostRoundEventHandler[] getPostRoundEventHandlers()
+	public List<PostRoundEventHandler> getPostRoundEventHandlers()
 	{
-		return this.handlers;
+		return config.getHandlers();
 	}
 }

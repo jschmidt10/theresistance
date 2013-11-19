@@ -12,25 +12,18 @@ public class MissionTest
 	@Test
 	public void testFailedMission()
 	{
-		Mission mission = new Mission(5, 1);
-		mission.setResults(Arrays.asList(Result.PASS, Result.PASS, Result.PASS, Result.FAIL, Result.FAIL));
+		Round round = new Round(0, new Mission(5, 1));
+		round.setResults(Arrays.asList(Result.PASS, Result.PASS, Result.PASS, Result.FAIL, Result.FAIL));
 
-		Assert.assertFalse(mission.isSuccess());
+		Assert.assertFalse(round.isSuccess());
 	}
 
 	@Test
 	public void testNotEnoughFails()
 	{
-		Mission mission = new Mission(5, 2);
-		mission.setResults(Arrays.asList(Result.PASS, Result.PASS, Result.PASS, Result.PASS, Result.FAIL));
+		Round round = new Round(0, new Mission(5, 2));
+		round.setResults(Arrays.asList(Result.PASS, Result.PASS, Result.PASS, Result.PASS, Result.FAIL));
 
-		Assert.assertTrue(mission.isSuccess());
-	}
-
-	@Test(expected = IllegalArgumentException.class)
-	public void testWrongNumberOfResults()
-	{
-		Mission mission = new Mission(5, 2);
-		mission.setResults(Arrays.asList(Result.PASS, Result.PASS, Result.PASS, Result.PASS));
+		Assert.assertTrue(round.isSuccess());
 	}
 }

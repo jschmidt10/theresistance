@@ -1,10 +1,9 @@
 package theresistance.core;
 
 import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
-
-import theresistance.core.util.ExtraInfoBag;
 
 /**
  * A mission proposal
@@ -16,10 +15,9 @@ public class Proposal
 		SEND, DONT_SEND
 	}
 
+	private final int totalPlayers;
 	private Player leader;
-	private ExtraInfoBag extraInfo = new ExtraInfoBag();
-	private int totalPlayers;
-	private Player[] participants;
+	private List<Player> participants;
 	private Map<Player, Vote> votes = new TreeMap<>();
 
 	public Proposal(int totalPlayers)
@@ -27,16 +25,26 @@ public class Proposal
 		this.totalPlayers = totalPlayers;
 	}
 
-	public void setParticipants(Player... participants)
+	/**
+	 * @param participants
+	 */
+	public void setParticipants(List<Player> participants)
 	{
 		this.participants = participants;
 	}
 
-	public Player[] getParticipants()
+	/**
+	 * @return mission participants
+	 */
+	public List<Player> getParticipants()
 	{
 		return participants;
 	}
 
+	/**
+	 * @return true if the strict majority approved the participants, false,
+	 *         otherwise
+	 */
 	public boolean isApproved()
 	{
 		int approvals = 0;
@@ -52,33 +60,38 @@ public class Proposal
 		return approvals * 2 > totalPlayers;
 	}
 
+	/**
+	 * sets a players vote
+	 * 
+	 * @param player
+	 * @param vote
+	 */
 	public void setVote(Player player, Vote vote)
 	{
 		votes.put(player, vote);
 	}
 
+	/**
+	 * @return votes
+	 */
 	public Map<Player, Vote> getVotes()
 	{
 		return Collections.unmodifiableMap(votes);
 	}
 
+	/**
+	 * @return mission leader
+	 */
 	public Player getLeader()
 	{
 		return leader;
 	}
 
+	/**
+	 * @param leader
+	 */
 	public void setLeader(Player leader)
 	{
 		this.leader = leader;
-	}
-
-	public ExtraInfoBag getExtraInfo()
-	{
-		return extraInfo;
-	}
-
-	public void setExtraInfo(ExtraInfoBag extraInfo)
-	{
-		this.extraInfo = extraInfo;
 	}
 }

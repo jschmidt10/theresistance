@@ -11,9 +11,9 @@ public class StatusResponse
 	 * @param gameId
 	 * @return status
 	 */
-	public static StatusResponse success(String gameId)
+	public static StatusResponse success(String gameId, Object data)
 	{
-		return new StatusResponse(Status.SUCCESS, "success", gameId);
+		return new StatusResponse(Status.SUCCESS, "success", gameId, data);
 	}
 
 	/**
@@ -25,7 +25,7 @@ public class StatusResponse
 	 */
 	public static StatusResponse failure(String message, String gameId)
 	{
-		return new StatusResponse(Status.FAILURE, message, gameId);
+		return new StatusResponse(Status.FAILURE, message, gameId, null);
 	}
 
 	public enum Status
@@ -36,12 +36,14 @@ public class StatusResponse
 	private Status status;
 	private String message;
 	private String gameId;
+	private Object data;
 
-	private StatusResponse(Status status, String message, String gameId)
+	private StatusResponse(Status status, String message, String gameId, Object data)
 	{
 		this.status = status;
 		this.message = message;
 		this.gameId = gameId;
+		this.data = data;
 	}
 
 	public Status getStatus()
@@ -57,5 +59,10 @@ public class StatusResponse
 	public String getGameId()
 	{
 		return gameId;
+	}
+
+	public Object getData()
+	{
+		return data;
 	}
 }

@@ -1,6 +1,7 @@
 package theresistance.server.view;
 
-import theresistance.core.config.GameConfig;
+import theresistance.core.Game;
+import theresistance.core.GameConfig;
 
 /**
  * Display information for the lobby view
@@ -12,12 +13,14 @@ public class LobbyView
 	private int currentPlayers;
 	private int totalPlayers;
 
-	public LobbyView(GameConfig config)
+	public LobbyView(Game game)
 	{
-		this.gameId = config.getId();
+		this.gameId = game.getId();
+		this.currentPlayers = game.getPlayers().size();
+
+		GameConfig config = game.getConfig();
 		this.owner = config.getOwner();
-		this.currentPlayers = config.getPlayers().size();
-		this.totalPlayers = config.getRoles().length;
+		this.totalPlayers = config.getRoles().size();
 	}
 
 	public String getGameId()

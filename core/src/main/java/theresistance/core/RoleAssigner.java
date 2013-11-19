@@ -1,11 +1,9 @@
-package theresistance.core.config;
+package theresistance.core;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
-
-import theresistance.core.Player;
-import theresistance.core.Role;
 
 /**
  * Randomly assigns roles to players
@@ -20,15 +18,15 @@ public class RoleAssigner
 	 * @param players
 	 * @param roles
 	 */
-	public void assign(Player[] players, Role[] roles)
+	public void assign(List<Player> players, List<Role> roles)
 	{
-		List<Role> roleList = cloneToList(roles);
+		List<Role> clonedRoles = new LinkedList<>(roles);
 
-		for (int i = 0; i < players.length; ++i)
+		for (int i = 0; i < players.size(); ++i)
 		{
-			int j = RANDOM.nextInt(roleList.size());
-			players[i].setRole(roleList.get(j));
-			roleList.remove(j);
+			int j = RANDOM.nextInt(clonedRoles.size());
+			players.get(i).setRole(clonedRoles.get(j));
+			clonedRoles.remove(j);
 		}
 	}
 

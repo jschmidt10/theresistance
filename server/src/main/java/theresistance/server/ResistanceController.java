@@ -1,6 +1,5 @@
 package theresistance.server;
 
-import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -11,12 +10,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import theresistance.core.Game;
+import theresistance.core.GameConfig;
 import theresistance.core.Mission;
 import theresistance.core.Player;
 import theresistance.core.PostRoundEventHandler;
 import theresistance.core.Role;
 import theresistance.core.cls.ImplDetector;
-import theresistance.core.config.GameConfig;
 import theresistance.server.view.LobbyView;
 import theresistance.server.view.OptionView;
 import theresistance.server.view.PlayerView;
@@ -53,16 +53,16 @@ public class ResistanceController
 
 	@RequestMapping(value = "rules", produces = "application/json")
 	@ResponseBody
-	public List<OptionView> getAvailableRules()
+	public StatusResponse getAvailableRules()
 	{
-		return RULE_NAMES;
+		return StatusResponse.success(null, RULE_NAMES);
 	}
 
 	@RequestMapping(value = "roles", produces = "application/json")
 	@ResponseBody
-	public List<OptionView> getAvailableRoles()
+	public StatusResponse getAvailableRoles()
 	{
-		return ROLE_NAMES;
+		return StatusResponse.success(null, ROLE_NAMES);
 	}
 
 	@RequestMapping(value = "newgame", produces = "application/json")
@@ -78,83 +78,83 @@ public class ResistanceController
 		config.setMissions(toMissions(numPlayers, numFailures));
 		config.setHandlers(toHandlerConfig(rules));
 
-		String id = registry.register(config);
+		String id = registry.register(new Game(config));
 
-		return StatusResponse.success(id);
+		return StatusResponse.success(id, null);
 	}
 
 	@RequestMapping(value = "newgames", produces = "application/json")
 	@ResponseBody
-	public Collection<LobbyView> getNewGames()
+	public StatusResponse getNewGames()
 	{
 		List<LobbyView> views = new LinkedList<>();
 
-		for (GameConfig config : registry.getNewGames())
+		for (Game game : registry.getNewGames())
 		{
-			views.add(new LobbyView(config));
+			views.add(new LobbyView(game));
 		}
 
-		return views;
+		return StatusResponse.success(null, views);
 	}
 
 	@RequestMapping(value = "players", produces = "application/json")
 	@ResponseBody
-	public List<PlayerView> getPlayers(@RequestParam String gameId)
+	public StatusResponse getPlayers(@RequestParam String gameId)
 	{
-		GameConfig config = registry.getGameConfig(gameId);
+		Game game = registry.getGame(gameId);
 		List<PlayerView> views = new LinkedList<PlayerView>();
 
-		for (Player player : config.getPlayers())
+		for (Player player : game.getPlayers())
 		{
 			views.add(new PlayerView(player));
 		}
 
-		return views;
+		return StatusResponse.success(gameId, views);
 	}
 
 	@RequestMapping(value = "join", produces = "application/json")
 	@ResponseBody
 	public StatusResponse joinGame(@RequestParam String gameId, @RequestParam String player)
 	{
-		GameConfig config = registry.getGameConfig(gameId);
-		config.addPlayer(new Player(player));
+		Game game = registry.getGame(gameId);
+		game.addPlayer(new Player(player));
 
-		return StatusResponse.success(gameId);
+		return StatusResponse.success(gameId, null);
 	}
 
-	private PostRoundEventHandler[] toHandlerConfig(List<String> names)
+	private List<PostRoundEventHandler> toHandlerConfig(List<String> names)
 	{
-		PostRoundEventHandler[] handlers = new PostRoundEventHandler[names.size()];
+		List<PostRoundEventHandler> handlers = new LinkedList<>();
 
-		for (int i = 0; i < handlers.length; ++i)
+		for (String name : names)
 		{
-			handlers[i] = RULES.get(names.get(i));
+			handlers.add(RULES.get(name));
 		}
 
 		return handlers;
 	}
 
-	private Mission[] toMissions(List<Integer> numPlayers, List<Integer> numFailures)
+	private List<Mission> toMissions(List<Integer> numPlayers, List<Integer> numFailures)
 	{
-		Mission[] missions = new Mission[numPlayers.size()];
+		List<Mission> missions = new LinkedList<>();
 
-		for (int i = 0; i < missions.length; ++i)
+		for (int i = 0; i < numPlayers.size(); ++i)
 		{
-			missions[i] = new Mission(numPlayers.get(i), numFailures.get(i));
+			missions.add(new Mission(numPlayers.get(i), numFailures.get(i)));
 		}
 
 		return missions;
 	}
 
-	private Role[] toRoleConfig(List<String> names)
+	private List<Role> toRoleConfig(List<String> names)
 	{
-		Role[] arr = new Role[names.size()];
+		List<Role> roles = new LinkedList<>();
 
-		for (int i = 0; i < arr.length; ++i)
+		for (String name : names)
 		{
-			arr[i] = ROLES.get(names.get(i));
+			roles.add(ROLES.get(name));
 		}
 
-		return arr;
+		return roles;
 	}
 }

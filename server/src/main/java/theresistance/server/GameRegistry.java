@@ -2,38 +2,45 @@ package theresistance.server;
 
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.UUID;
 
 import theresistance.core.Game;
-import theresistance.core.config.GameConfig;
 
 /**
  * Manages uniquely id'ing new games and managing existing games
  */
 public class GameRegistry
 {
-	private Set<String> usedIds = new HashSet<>();
-	private Map<String, GameConfig> configs = new HashMap<>();
 	private Map<String, Game> games = new HashMap<>();
 
 	/**
 	 * @return new games
 	 */
-	public synchronized Collection<GameConfig> getNewGames()
+	public synchronized Collection<Game> getNewGames()
 	{
-		return configs.values();
+		List<Game> newGames = new LinkedList<>();
+
+		for (Game g : games.values())
+		{
+			if (!g.isStarted())
+			{
+				newGames.add(g);
+			}
+		}
+
+		return newGames;
 	}
 
 	/**
-	 * registers a new game config
+	 * registers a new game
 	 * 
-	 * @param config
-	 * @return id for new config
+	 * @param game
+	 * @return game id
 	 */
-	public synchronized String register(GameConfig config)
+	public synchronized String register(Game game)
 	{
 		String id = null;
 
@@ -41,12 +48,10 @@ public class GameRegistry
 		{
 			id = UUID.randomUUID().toString();
 		}
-		while (usedIds.contains(id));
+		while (games.containsKey(id));
 
-		configs.put(id, config);
-		config.setId(id);
-
-		usedIds.add(id);
+		games.put(id, game);
+		game.setId(id);
 
 		return id;
 	}
@@ -55,8 +60,8 @@ public class GameRegistry
 	 * @param gameId
 	 * @return game config
 	 */
-	public synchronized GameConfig getGameConfig(String gameId)
+	public synchronized Game getGame(String gameId)
 	{
-		return configs.get(gameId);
+		return games.get(gameId);
 	}
 }

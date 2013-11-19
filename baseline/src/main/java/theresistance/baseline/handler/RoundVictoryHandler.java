@@ -2,7 +2,6 @@ package theresistance.baseline.handler;
 
 import theresistance.core.Alignment;
 import theresistance.core.Game;
-import theresistance.core.Mission;
 import theresistance.core.PostRoundEventHandler;
 import theresistance.core.Round;
 
@@ -28,7 +27,7 @@ public class RoundVictoryHandler implements PostRoundEventHandler
 	public void init(Game game)
 	{
 		this.game = game;
-		this.numWins = (game.getRounds().length + 1) / 2;
+		this.numWins = (game.getRounds().size() + 1) / 2;
 	}
 
 	@Override
@@ -63,11 +62,9 @@ public class RoundVictoryHandler implements PostRoundEventHandler
 
 		for (Round round : game.getRounds())
 		{
-			Mission mission = round.getMission();
-
-			if (mission.isSent())
+			if (round.isFinished())
 			{
-				if (round.getMission().isSuccess())
+				if (round.isSuccess())
 				{
 					scores[GOOD_INDEX]++;
 				}
