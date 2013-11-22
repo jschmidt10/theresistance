@@ -13,12 +13,13 @@ public class Game
 	private String id;
 	private final GameConfig config;
 	private final List<Round> rounds = new LinkedList<>();
-	private final List<Player> players = new LinkedList<>();
+	private List<Player> players = new LinkedList<>();
 
-	private ExtraInfoBag extraInfo = new ExtraInfoBag();
+	private final ExtraInfoBag extraInfo = new ExtraInfoBag();
 
 	private boolean isStarted = false;
 	private int curRound = 0;
+	private final int curLeader = 0;
 	private Alignment winners = Alignment.NEITHER;
 
 	public Game(GameConfig config)
@@ -26,16 +27,27 @@ public class Game
 		this.config = config;
 	}
 
+	/**
+	 * set id
+	 * 
+	 * @param id
+	 */
 	public void setId(String id)
 	{
 		this.id = id;
 	}
 
+	/**
+	 * @return id
+	 */
 	public String getId()
 	{
 		return id;
 	}
 
+	/**
+	 * @return config
+	 */
 	public GameConfig getConfig()
 	{
 		return config;
@@ -57,6 +69,7 @@ public class Game
 	public void start()
 	{
 		new RoleAssigner().assign(players, config.getRoles());
+		players = new PlayerShuffler().shuffle(players);
 
 		for (Mission mission : config.getMissions())
 		{
@@ -122,53 +135,111 @@ public class Game
 		curRound++;
 	}
 
+	/**
+	 * @return true if the game is over, false, otherwise
+	 */
 	public boolean isOver()
 	{
 		return winners != Alignment.NEITHER;
 	}
 
+	/**
+	 * @return the winning side
+	 */
 	public Alignment getWinners()
 	{
 		return winners;
 	}
 
+	/**
+	 * set winning team
+	 * 
+	 * @param winners
+	 */
 	public void setWinners(Alignment winners)
 	{
 		this.winners = winners;
 	}
 
+	/**
+	 * @return extra info
+	 */
 	public ExtraInfoBag getExtraInfo()
 	{
 		return extraInfo;
 	}
 
-	public void setExtraInfo(ExtraInfoBag extraInfo)
-	{
-		this.extraInfo = extraInfo;
-	}
-
+	/**
+	 * @return rounds
+	 */
 	public List<Round> getRounds()
 	{
 		return rounds;
 	}
 
+	/**
+	 * @return players
+	 */
 	public List<Player> getPlayers()
 	{
 		return players;
 	}
 
+	/**
+	 * get a player by their name
+	 * 
+	 * @param name
+	 * @return player
+	 */
+	public Player getPlayer(String name)
+	{
+		for (Player p : players)
+		{
+			if (name.equals(p.getName()))
+			{
+				return p;
+			}
+		}
+		return null;
+	}
+
+	/**
+	 * @return number of players
+	 */
 	public int getNumPlayers()
 	{
 		return players.size();
 	}
 
+	/**
+	 * @return current round of play
+	 */
 	public Round getCurrentRound()
 	{
 		return rounds.get(curRound);
 	}
 
+	/**
+	 * @return round handlers
+	 */
 	public List<PostRoundEventHandler> getPostRoundEventHandlers()
 	{
 		return config.getHandlers();
+	}
+
+	/**
+	 * @return true if the game is ready to start, false, otherwise
+	 */
+	public boolean isReady()
+	{
+		return players.size() == config.getRoles().size();
+	}
+
+	/**
+	 * @return current mission leader
+	 */
+	public Player getCurrentLeader()
+	{
+		return players.get(curLeader);
 	}
 }
