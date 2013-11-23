@@ -13,7 +13,7 @@ public class StatusResponse
 	 */
 	public static StatusResponse success(String gameId, Object data)
 	{
-		return new StatusResponse(Status.SUCCESS, "success", gameId, data);
+		return new StatusResponse(true, "success", gameId, data);
 	}
 
 	/**
@@ -25,30 +25,25 @@ public class StatusResponse
 	 */
 	public static StatusResponse failure(String message, String gameId)
 	{
-		return new StatusResponse(Status.FAILURE, message, gameId, null);
+		return new StatusResponse(false, message, gameId, null);
 	}
 
-	public enum Status
-	{
-		SUCCESS, FAILURE
-	}
-
-	private Status status;
+	private boolean success;
 	private String message;
 	private String gameId;
 	private Object data;
 
-	private StatusResponse(Status status, String message, String gameId, Object data)
+	private StatusResponse(boolean success, String message, String gameId, Object data)
 	{
-		this.status = status;
+		this.success = success;
 		this.message = message;
 		this.gameId = gameId;
 		this.data = data;
 	}
 
-	public Status getStatus()
+	public boolean getSuccess()
 	{
-		return status;
+		return success;
 	}
 
 	public String getMessage()
