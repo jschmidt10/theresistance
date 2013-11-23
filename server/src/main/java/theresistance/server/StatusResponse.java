@@ -1,10 +1,33 @@
 package theresistance.server;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+
 /**
  * A generic response message to send to the front end
  */
 public class StatusResponse
 {
+	static class Pair 
+	{
+		private String key;
+		private Object value;
+		public Pair(String key, Object value) 
+		{
+			this.key = key;
+			this.value = value;
+		}
+		public String getKey()
+		{
+			return key;
+		}
+		public Object getValue()
+		{
+			return value;
+		}
+	}
 	/**
 	 * A success response
 	 * 
@@ -13,6 +36,14 @@ public class StatusResponse
 	 */
 	public static StatusResponse success(String gameId, Object data)
 	{
+		if (data instanceof Map<?, ?>) {
+			List<Pair> newData = new ArrayList<Pair>();
+			for (Entry<?, ?> entry : ((Map<?, ?>)data).entrySet()) 
+			{
+				newData.add(new Pair(entry.getKey().toString(), entry.getValue()));
+			}
+			data = newData;
+		}
 		return new StatusResponse(true, "success", gameId, data);
 	}
 
