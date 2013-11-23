@@ -2,6 +2,20 @@ var userName = false;
 
 Ext.onReady(function() {
 	
+	function isSuccessful(name, json) { 
+		if (json.success) {
+			return true;
+		} else {
+			Ext.Msg.alert(name + ' Error', json.message);
+			return false;
+		}
+	}
+	
+	var responseWrapperReader = {
+		type: 'json',
+		root: 'data'
+	};
+	
 	if (!userName) {
 		Ext.Msg.show({
 			title: 'Missing User Name',
@@ -46,12 +60,16 @@ Ext.onReady(function() {
 						Ext.Ajax.request({
 							url: '/server/rules',
 							success: function(response) {
-								var rules = Ext.JSON.decode(response.responseText);
+								var wrapper = Ext.JSON.decode(response.responseText);;
+								if (!isSuccessful("Create Game", wrapper)) {
+									return;
+								}
+								var rules = wrapper.data;
 								var rulesConfig = [];
 								Ext.Array.each(rules, function(rule) {
 									Ext.Array.push(rulesConfig, {
-										boxLabel: rule.display,
-										inputValue: rule.name
+										boxLabel: rule.value,
+										inputValue: rule.key
 									});
 								});
 
@@ -73,13 +91,14 @@ Ext.onReady(function() {
 									    	margin: '0 0 0 4',
 									    	fieldLabel: 'Roles:',
 									    	itemId: 'roleCombo',
-									    	displayField: 'display',
-									    	valueField: 'name',
+									    	displayField: 'value',
+									    	valueField: 'key',
 									    	store: {
-									    		fields: ['name', 'display'],
+									    		fields: ['key', 'value'],
 									    		proxy: {
 									    			type: 'ajax',
-									    			url: '/server/roles'
+									    			url: '/server/roles',
+										    		reader: responseWrapperReader
 									    		}
 									    	}
 								    	}, {
@@ -109,7 +128,7 @@ Ext.onReady(function() {
 								    	xtype: 'grid',
 								    	itemId: 'roleGrid',
 								    	columns: [{ text: 'Role Name', dataIndex: 'display', flex: 1 }],
-								    	store: { fields: ['name', 'display'] }
+								    	store: { fields: ['display', 'name'] }
 								    }, {
 								    	xtype: 'label',
 								    	text: 'Mission player counts:'
@@ -174,7 +193,11 @@ Ext.onReady(function() {
 									    			url: '/server/newgame',
 									    			params: params,
 									    			success: function(response) {
-											    		window.close();
+									    				var wrapper = Ext.JSON.decode(response.responseText);
+									    				if (!isSuccessful("Create Game", wrapper)) {
+									    					return;
+									    				}
+										    			window.close();
 									    			},
 									    			failure: function(response) {
 									    				Ext.Msg.alert('Create Game Error', 'Could not create game: ' + response.responseText);
@@ -195,19 +218,6 @@ Ext.onReady(function() {
 					}
 				}, {
 					xtype: 'button',
-					text: 'Join Game',
-					itemId: 'joinGameButton',
-					disabled: true,
-					handler: function() {
-						var gamesGrid = Ext.ComponentQuery.query('#gamesGrid')[0];
-						var gameId = gamesGrid.getSelectionModel().getSelection()[0].get('gameId');
-						Ext.Ajax.request({
-							url: '/server/join',
-							params: { gameId: gameId, player: userName }
-						});
-					}
-				}, {
-					xtype: 'button',
 					text: 'Delete Game',
 					itemId: 'deleteGameButton',
 					disabled: true,
@@ -220,6 +230,40 @@ Ext.onReady(function() {
 //									url: '/server/delete',
 //									params: { gameId: gameId }
 //								});
+							}
+						});
+					}
+				}, {
+					xtype: 'button',
+					text: 'Join Game',
+					itemId: 'joinGameButton',
+					disabled: true,
+					handler: function() {
+						var gamesGrid = Ext.ComponentQuery.query('#gamesGrid')[0];
+						var gameId = gamesGrid.getSelectionModel().getSelection()[0].get('gameId');
+						Ext.Ajax.request({
+							url: '/server/join',
+							params: { gameId: gameId, player: userName },
+							success: function(response) {
+								var wrapper = Ext.JSON.decode(response.responseText);
+								isSuccessful("Join Game", wrapper);
+							}
+						});
+					}
+				}, {
+					xtype: 'button',
+					text: 'Leave Game',
+					itemId: 'leaveGameButton',
+					disabled: true,
+					handler: function() {
+						var gamesGrid = Ext.ComponentQuery.query('#gamesGrid')[0];
+						var gameId = gamesGrid.getSelectionModel().getSelection()[0].get('gameId');
+						Ext.Ajax.request({
+							url: '/server/leave',
+							params: { gameId: gameId, player: userName },
+							success: function(response) {
+								var wrapper = Ext.JSON.decode(response.responseText);
+								isSuccessful("Leave Game", wrapper);
 							}
 						});
 					}
@@ -274,9 +318,13 @@ Ext.onReady(function() {
 				url: '/server/players',
 				params: { gameId: gameId },
 				success: function(response) {
+					var wrapper = Ext.JSON.decode(response.responseText);
+					if (!isSuccessful("Player Load", wrapper)) {
+						return;
+					}
 					var playersGrid = Ext.ComponentQuery.query('#playersGrid')[0];
 					var playersStore = playersGrid.getStore();
-					var players = Ext.JSON.decode(response.responseText);
+					var players = wrapper.data;
 					if (loadPlayersTask.newSelection) {
 						loadPlayersTask.newSelection = false;
 						playersStore.loadData(players, false);
@@ -330,6 +378,7 @@ Ext.onReady(function() {
 		}
 		Ext.ComponentQuery.query('#deleteGameButton')[0].setDisabled(!isOwner);
 		Ext.ComponentQuery.query('#joinGameButton')[0].setDisabled(!gameSelected);
+		Ext.ComponentQuery.query('#leaveGameButton')[0].setDisabled(!gameSelected);
 	}, gamesGrid);
 	
 	var loadGamesTask = {};
@@ -338,7 +387,11 @@ Ext.onReady(function() {
 		Ext.Ajax.request({
 			url: '/server/newgames',
 			success: function(response) {
-				var games = Ext.JSON.decode(response.responseText);
+				var wrapper = Ext.JSON.decode(response.responseText);
+				if (!isSuccessful("Load Games", wrapper)) {
+					return;
+				}
+				var games = wrapper.data;
 				var gamesExist = {};
 				Ext.Array.each(games, function(game) {
 					var existing = gamesStore.findRecord('gameId', game.gameId);
