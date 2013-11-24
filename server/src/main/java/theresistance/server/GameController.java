@@ -95,6 +95,10 @@ public class GameController
 	public StatusResponse getPlayers(@RequestParam String gameId)
 	{
 		Game game = registry.getGame(gameId);
+		if (game == null) {
+			return StatusResponse.failure("Game doesn't exist", gameId);
+		}
+		
 		List<PlayerView> views = new LinkedList<PlayerView>();
 
 		for (Player player : game.getPlayers())
