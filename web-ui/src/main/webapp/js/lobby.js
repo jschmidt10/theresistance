@@ -2,15 +2,6 @@ var userName = false;
 
 Ext.onReady(function() {
 	
-	function isSuccessful(name, json) { 
-		if (json.success) {
-			return true;
-		} else {
-			Ext.Msg.alert(name + ' Error', json.message);
-			return false;
-		}
-	}
-	
 	var responseWrapperReader = {
 		type: 'json',
 		root: 'data'
@@ -224,12 +215,13 @@ Ext.onReady(function() {
 					handler: function() {
 						Ext.Msg.confirm('Delete Game', 'Are you sure you want to delete this game?', function(button) {
 							if (button == 'yes') {
-//								var gamesGrid = Ext.ComponentQuery.query('#gamesGrid')[0];
-//								var gameId = gamesGrid.getSelectionModel().getSelection()[0].get('gameId');
-//								Ext.Ajax.request({
-//									url: '/server/delete',
-//									params: { gameId: gameId }
-//								});
+								var gamesGrid = Ext.ComponentQuery.query('#gamesGrid')[0];
+								var gameId = gamesGrid.getSelectionModel().getSelection()[0].get('gameId');
+								Ext.Ajax.request({
+									url: '/server/delete',
+									params: { gameId: gameId },
+									success: errorCheckingHandler("Delete Game")
+								});
 							}
 						});
 					}
@@ -244,10 +236,7 @@ Ext.onReady(function() {
 						Ext.Ajax.request({
 							url: '/server/join',
 							params: { gameId: gameId, player: userName },
-							success: function(response) {
-								var wrapper = Ext.JSON.decode(response.responseText);
-								isSuccessful("Join Game", wrapper);
-							}
+							success: errorCheckingHandler("Join Game")
 						});
 					}
 				}, {
@@ -261,10 +250,7 @@ Ext.onReady(function() {
 						Ext.Ajax.request({
 							url: '/server/leave',
 							params: { gameId: gameId, player: userName },
-							success: function(response) {
-								var wrapper = Ext.JSON.decode(response.responseText);
-								isSuccessful("Leave Game", wrapper);
-							}
+							success: errorCheckingHandler("Leave Game")
 						});
 					}
 				}]
@@ -322,6 +308,13 @@ Ext.onReady(function() {
 					if (!isSuccessful("Player Load", wrapper)) {
 						return;
 					}
+					if (!gameId || Ext.StoreManager.lookup('gamesStore').find('gameId', gameId) == -1) {
+						Ext.ComponentQuery.query('#joinGameButton')[0].setDisabled(true);
+						Ext.ComponentQuery.query('#leaveGameButton')[0].setDisabled(true);
+						Ext.StoreManager.lookup('playersStore').removeAll();
+						return;
+					} 
+					
 					var playersGrid = Ext.ComponentQuery.query('#playersGrid')[0];
 					var playersStore = playersGrid.getStore();
 					var players = wrapper.data;
@@ -346,23 +339,31 @@ Ext.onReady(function() {
 						if (remove.length > 0) {
 							playersStore.remove(remove);
 						}
+						var isInGame = playersStore.find('name', userName) != -1;
+						Ext.ComponentQuery.query('#joinGameButton')[0].setDisabled(isInGame);
+						Ext.ComponentQuery.query('#leaveGameButton')[0].setDisabled(!isInGame);
 					}
 					loadPlayersTask.task.delay(1000);
 				},
 				failure: function() {
 					var playersGrid = Ext.ComponentQuery.query('#playersGrid')[0];
 					var playersStore = playersGrid.getStore();
+					Ext.ComponentQuery.query('#joinGameButton')[0].setDisabled(true);
+					Ext.ComponentQuery.query('#leaveGameButton')[0].setDisabled(true);
 					playersStore.removeAll();
 					playersGrid.setLoading(false);
 				}
 			});
+		} else {
+			Ext.ComponentQuery.query('#joinGameButton')[0].setDisabled(true);
+			Ext.ComponentQuery.query('#leaveGameButton')[0].setDisabled(true);
+			Ext.StoreManager.lookup('playersStore').removeAll();
 		}
 	});
 	
 	var gamesGrid = Ext.ComponentQuery.query('#gamesGrid')[0];
 	gamesGrid.getSelectionModel().on('selectionchange', function(source, selected) {
 		var isOwner = false;
-		var gameSelected = false;
 		if (selected.length > 0) {
 			var playersGrid = Ext.ComponentQuery.query('#playersGrid')[0];
 			loadPlayersTask.newSelection = true;
@@ -372,13 +373,10 @@ Ext.onReady(function() {
 			if (selected[0].get('owner') == userName) {
 				isOwner = true;
 			}
-			gameSelected = true;
 		} else {
 			loadPlayersTask.gameId = false;
 		}
 		Ext.ComponentQuery.query('#deleteGameButton')[0].setDisabled(!isOwner);
-		Ext.ComponentQuery.query('#joinGameButton')[0].setDisabled(!gameSelected);
-		Ext.ComponentQuery.query('#leaveGameButton')[0].setDisabled(!gameSelected);
 	}, gamesGrid);
 	
 	var loadGamesTask = {};
@@ -412,6 +410,9 @@ Ext.onReady(function() {
 				});
 				if (remove.length > 0) {
 					gamesStore.remove(remove);
+				}
+				if (gamesGrid.getSelectionModel().getSelection().length == 0) {
+					loadPlayersTask.gameId = false;
 				}
 				loadGamesTask.task.delay(1000);
 			}
