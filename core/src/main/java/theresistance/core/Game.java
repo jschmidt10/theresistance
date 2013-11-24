@@ -2,6 +2,8 @@ package theresistance.core;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 
 import theresistance.core.util.ExtraInfoBag;
 
@@ -14,6 +16,7 @@ public class Game
 	private final GameConfig config;
 	private final List<Round> rounds = new LinkedList<>();
 	private List<Player> players = new LinkedList<>();
+	private Map<String, Player> playersByName = new TreeMap<>();
 
 	private final ExtraInfoBag extraInfo = new ExtraInfoBag();
 
@@ -60,7 +63,23 @@ public class Game
 	 */
 	public void addPlayer(Player player)
 	{
-		players.add(player);
+		if (playersByName.put(player.getName(), player) == null)
+		{
+			players.add(player);
+		}
+	}
+	
+	/**
+	 * Removes a player from the game.
+	 * 
+	 * @param player
+	 */
+	public void removePlayer(Player player)
+	{
+		if (playersByName.remove(player) != null)
+		{
+			players.remove(player);
+		}
 	}
 
 	/**
@@ -69,7 +88,11 @@ public class Game
 	public void start()
 	{
 		new RoleAssigner().assign(players, config.getRoles());
-		players = new PlayerShuffler().shuffle(players);
+		
+		for (Player p : players) 
+		{
+			playersByName.put(p.getName(), p);
+		}
 
 		for (Mission mission : config.getMissions())
 		{
@@ -193,14 +216,7 @@ public class Game
 	 */
 	public Player getPlayer(String name)
 	{
-		for (Player p : players)
-		{
-			if (name.equals(p.getName()))
-			{
-				return p;
-			}
-		}
-		return null;
+		return playersByName.get(name);
 	}
 
 	/**
