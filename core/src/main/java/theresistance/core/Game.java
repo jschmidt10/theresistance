@@ -76,7 +76,7 @@ public class Game
 	 */
 	public void removePlayer(Player player)
 	{
-		if (playersByName.remove(player) != null)
+		if (playersByName.remove(player.getName()) != null)
 		{
 			players.remove(player);
 		}
