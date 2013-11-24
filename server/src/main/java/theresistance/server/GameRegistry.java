@@ -55,6 +55,18 @@ public class GameRegistry
 
 		return id;
 	}
+	
+	/**
+	 * Unregisters a game.
+	 * 
+	 * @param game
+	 */
+	public synchronized void unregister(Game game)
+	{
+		games.remove(game.getId());
+	}
+	
+	
 
 	/**
 	 * @param gameId

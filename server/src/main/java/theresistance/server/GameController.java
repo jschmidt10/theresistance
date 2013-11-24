@@ -63,6 +63,18 @@ public class GameController
 
 		return StatusResponse.success(id, null);
 	}
+	
+	@RequestMapping(value = "delete", produces = "application/json")
+	@ResponseBody
+	public StatusResponse deleteGame(@RequestParam String gameId)
+	{
+		Game game = registry.getGame(gameId);
+		if (game != null) 
+		{
+			registry.unregister(game);
+		}
+		return StatusResponse.success(gameId, null);
+	}
 
 	@RequestMapping(value = "newgames", produces = "application/json")
 	@ResponseBody
@@ -105,6 +117,16 @@ public class GameController
 			game.start();
 		}
 
+		return StatusResponse.success(gameId, null);
+	}
+	
+	@RequestMapping(value = "leave", produces = "application/json")
+	@ResponseBody
+	public StatusResponse leaveGame(@RequestParam String gameId, @RequestParam String player)
+	{
+		Game game = registry.getGame(gameId);
+		Player thisPlayer = game.getPlayer(player);
+		game.removePlayer(thisPlayer);
 		return StatusResponse.success(gameId, null);
 	}
 
