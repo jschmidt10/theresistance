@@ -76,13 +76,13 @@ public class GameController
 		return StatusResponse.success(gameId, null);
 	}
 
-	@RequestMapping(value = "newgames", produces = "application/json")
+	@RequestMapping(value = "games", produces = "application/json")
 	@ResponseBody
 	public StatusResponse getNewGames()
 	{
 		List<LobbyView> views = new LinkedList<>();
 
-		for (Game game : registry.getNewGames())
+		for (Game game : registry.getGames())
 		{
 			views.add(new LobbyView(game));
 		}

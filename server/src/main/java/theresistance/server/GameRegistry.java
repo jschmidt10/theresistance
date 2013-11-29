@@ -2,8 +2,6 @@ package theresistance.server;
 
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -19,19 +17,9 @@ public class GameRegistry
 	/**
 	 * @return new games
 	 */
-	public synchronized Collection<Game> getNewGames()
+	public synchronized Collection<Game> getGames()
 	{
-		List<Game> newGames = new LinkedList<>();
-
-		for (Game g : games.values())
-		{
-			if (!g.isStarted())
-			{
-				newGames.add(g);
-			}
-		}
-
-		return newGames;
+		return games.values();
 	}
 
 	/**

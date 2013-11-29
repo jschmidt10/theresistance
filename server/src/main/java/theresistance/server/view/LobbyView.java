@@ -12,11 +12,13 @@ public class LobbyView
 	private String owner;
 	private int currentPlayers;
 	private int totalPlayers;
+	private boolean isStarted;
 
 	public LobbyView(Game game)
 	{
 		this.gameId = game.getId();
 		this.currentPlayers = game.getPlayers().size();
+		this.isStarted = game.isStarted();
 
 		GameConfig config = game.getConfig();
 		this.owner = config.getOwner();
@@ -41,5 +43,15 @@ public class LobbyView
 	public int getTotalPlayers()
 	{
 		return totalPlayers;
+	}
+
+	public boolean isStarted()
+	{
+		return isStarted;
+	}
+
+	public void setStarted(boolean isStarted)
+	{
+		this.isStarted = isStarted;
 	}
 }
