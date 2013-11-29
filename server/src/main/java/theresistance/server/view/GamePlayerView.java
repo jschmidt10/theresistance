@@ -25,9 +25,12 @@ public class GamePlayerView
 		for (Player p : game.getPlayers())
 		{
 			order.add(p.getName());
-			if (p.getName().equals(player)) {
+			if (p.getName().equals(player))
+			{
 				roles.put(p.getName(), myRole.getClass().getSimpleName().toUpperCase());
-			} else {
+			}
+			else
+			{
 				roles.put(p.getName(), myRole.identify(p.getRole()));
 			}
 		}
