@@ -70,6 +70,11 @@ public class Proposal
 	{
 		votes.put(player, vote);
 	}
+	
+	public void setVotes(Map<Player, Vote> votes) 
+	{
+		this.votes.putAll(votes);
+	}
 
 	/**
 	 * @return votes

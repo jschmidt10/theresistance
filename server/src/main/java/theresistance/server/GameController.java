@@ -149,6 +149,14 @@ public class GameController
 		Game game = registry.getGame(gameId);
 		return StatusResponse.success(gameId, new GamePlayerView(game, player));
 	}
+	
+	@RequestMapping(value = "gameState", produces = "application/json")
+	@ResponseBody
+	public StatusResponse getGameState(@RequestParam String gameId)
+	{
+		Game game = registry.getGame(gameId);
+		return StatusResponse.success(gameId, game.getGameState());
+	}
 
 	private List<Mission> toMissions(List<Integer> numPlayers, List<Integer> numFailures)
 	{

@@ -5,6 +5,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
+import theresistance.core.state.GameState;
+import theresistance.core.state.WaitingForMissionResult;
+import theresistance.core.state.WaitingForProposal;
 import theresistance.core.util.ExtraInfoBag;
 
 /**
@@ -17,12 +20,13 @@ public class Game
 	private final List<Round> rounds = new LinkedList<>();
 	private List<Player> players = new LinkedList<>();
 	private Map<String, Player> playersByName = new TreeMap<>();
+	private GameState gameState;
 
 	private final ExtraInfoBag extraInfo = new ExtraInfoBag();
 
 	private boolean isStarted = false;
 	private int curRound = 0;
-	private final int curLeader = 0;
+	private int curLeader = 0;
 	private Alignment winners = Alignment.NEITHER;
 
 	public Game(GameConfig config)
@@ -46,6 +50,11 @@ public class Game
 	public String getId()
 	{
 		return id;
+	}
+	
+	public void gotoNextLeader() 
+	{
+		curLeader = (curLeader + 1) % players.size();
 	}
 
 	/**
@@ -103,6 +112,11 @@ public class Game
 		{
 			handler.init(this);
 		}
+		
+		if (gameState == null)
+		{
+			gameState = new WaitingForProposal(getCurrentLeader());
+		}
 
 		isStarted = true;
 	}
@@ -123,12 +137,17 @@ public class Game
 	 */
 	public Proposal propose(List<Player> participants)
 	{
-		Proposal proposal = new Proposal(getNumPlayers());
-		proposal.setParticipants(participants);
-
-		getCurrentRound().addProposal(proposal);
-
-		return proposal;
+		if (gameState instanceof WaitingForProposal)
+		{
+			WaitingForProposal state = (WaitingForProposal)gameState;
+			state.setProposal(participants);
+			state.advanceGameState(this);
+			return getCurrentRound().getLastProposal();
+		}
+		else
+		{
+			throw new IllegalStateException("Cannot propose a mission at this time.");
+		}
 	}
 
 	/**
@@ -141,6 +160,7 @@ public class Game
 	{
 		Round curRound = getCurrentRound();
 		curRound.setParticipants(proposal.getParticipants());
+		gameState = new WaitingForMissionResult(proposal.getParticipants());
 		return curRound;
 	}
 
@@ -150,12 +170,20 @@ public class Game
 	 */
 	public void completeRound()
 	{
+		GameState current = gameState;
 		for (PostRoundEventHandler handler : config.getHandlers())
 		{
 			handler.roundFinished();
 		}
-
 		curRound++;
+		
+		// If the post round event handlers haven't changed 
+		// the game state, the we can advance it by default.
+		if (gameState == current)
+		{
+			gotoNextLeader();
+			gameState = new WaitingForProposal(getCurrentLeader());
+		}
 	}
 
 	/**
@@ -257,5 +285,15 @@ public class Game
 	public Player getCurrentLeader()
 	{
 		return players.get(curLeader);
+	}
+
+	public GameState getGameState()
+	{
+		return gameState;
+	}
+
+	public void setGameState(GameState gameState)
+	{
+		this.gameState = gameState;
 	}
 }

@@ -27,6 +27,28 @@ public class Round
 	{
 		return index;
 	}
+	
+	public List<Proposal> getProposals()
+	{
+		return proposals;
+	}
+	
+	public int getProposalIndex()
+	{
+		return proposals.size();
+	}
+	
+	public Proposal getLastProposal()
+	{
+		if (proposals.isEmpty())
+		{
+			return null;
+		}
+		else
+		{
+			return proposals.get(proposals.size() - 1);
+		}
+	}
 
 	public void setParticipants(List<Player> participants)
 	{
