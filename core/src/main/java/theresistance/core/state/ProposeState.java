@@ -7,12 +7,15 @@ import theresistance.core.Player;
 import theresistance.core.Proposal;
 import theresistance.core.Round;
 
-public class WaitingForProposal extends GameState
+/**
+ * The proposal portion of a game
+ */
+public class ProposeState extends GameState
 {
 	private Player leader;
 	private List<Player> participants;
 
-	public WaitingForProposal(Player player)
+	public ProposeState(Player player)
 	{
 		this.leader = player;
 	}
@@ -34,11 +37,12 @@ public class WaitingForProposal extends GameState
 	}
 
 	@Override
-	public void advanceGameState(Game game)
+	public void advance(Game game)
 	{
 		Round round = game.getCurrentRound();
 		Proposal proposal = new Proposal(game.getNumPlayers());
 		proposal.setParticipants(participants);
+		proposal.setLeader(game.getCurrentLeader());
 		round.addProposal(proposal);
 
 		// check hammer

@@ -1,5 +1,7 @@
 package theresistance.server;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -92,5 +94,12 @@ public class GamePlayController
 		Round round = game.getRound(index);
 
 		return StatusResponse.success(gameId, round.getResults());
+	}
+
+	@RequestMapping(value = "propose", produces = "application/json")
+	@ResponseBody
+	public StatusResponse propose(@RequestParam String gameId, @RequestParam("players") List<String> players)
+	{
+		Game game = registry.getGame(gameId);
 	}
 }

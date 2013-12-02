@@ -50,7 +50,7 @@ public class WaitingForMissionResult extends GameState
 	}
 
 	@Override
-	public void advanceGameState(Game game)
+	public void advance(Game game)
 	{
 		List<Result> results = new ArrayList<>(this.results.values());
 		List<Result> shuffledResults = new ArrayList<>(results.size());

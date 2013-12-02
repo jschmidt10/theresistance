@@ -2,12 +2,10 @@ package theresistance.core;
 
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
 
 import theresistance.core.state.GameState;
 import theresistance.core.state.WaitingForMissionResult;
-import theresistance.core.state.WaitingForProposal;
+import theresistance.core.state.ProposeState;
 import theresistance.core.util.ExtraInfoBag;
 
 /**
@@ -19,7 +17,6 @@ public class Game
 	private final GameConfig config;
 	private final List<Round> rounds = new LinkedList<>();
 	private List<Player> players = new LinkedList<>();
-	private Map<String, Player> playersByName = new TreeMap<>();
 	private GameState gameState;
 
 	private final ExtraInfoBag extraInfo = new ExtraInfoBag();
@@ -72,10 +69,7 @@ public class Game
 	 */
 	public void addPlayer(Player player)
 	{
-		if (playersByName.put(player.getName(), player) == null)
-		{
-			players.add(player);
-		}
+		players.add(player);
 	}
 
 	/**
@@ -85,10 +79,7 @@ public class Game
 	 */
 	public void removePlayer(Player player)
 	{
-		if (playersByName.remove(player.getName()) != null)
-		{
-			players.remove(player);
-		}
+		players.remove(player);
 	}
 
 	/**
@@ -97,11 +88,6 @@ public class Game
 	public void start()
 	{
 		new RoleAssigner().assign(players, config.getRoles());
-
-		for (Player p : players)
-		{
-			playersByName.put(p.getName(), p);
-		}
 
 		for (Mission mission : config.getMissions())
 		{
@@ -115,7 +101,7 @@ public class Game
 
 		if (gameState == null)
 		{
-			gameState = new WaitingForProposal(getCurrentLeader());
+			gameState = new ProposeState(getCurrentLeader());
 		}
 
 		isStarted = true;
@@ -137,11 +123,11 @@ public class Game
 	 */
 	public Proposal propose(List<Player> participants)
 	{
-		if (gameState instanceof WaitingForProposal)
+		if (gameState instanceof ProposeState)
 		{
-			WaitingForProposal state = (WaitingForProposal) gameState;
+			ProposeState state = (ProposeState) gameState;
 			state.setProposal(participants);
-			state.advanceGameState(this);
+			state.advance(this);
 			return getCurrentRound().getLastProposal();
 		}
 		else
@@ -182,7 +168,7 @@ public class Game
 		if (gameState == current)
 		{
 			gotoNextLeader();
-			gameState = new WaitingForProposal(getCurrentLeader());
+			gameState = new ProposeState(getCurrentLeader());
 		}
 	}
 
@@ -244,7 +230,7 @@ public class Game
 	 */
 	public Player getPlayer(String name)
 	{
-		return playersByName.get(name);
+		return players.get(players.indexOf(new Player(name)));
 	}
 
 	/**

@@ -45,7 +45,7 @@ public class WaitingForProposalVotes extends GameState
 	}
 	
 	@Override
-	public void advanceGameState(Game game)
+	public void advance(Game game)
 	{
 		proposal.setVotes(votes);
 		if (proposal.isApproved())
@@ -55,7 +55,7 @@ public class WaitingForProposalVotes extends GameState
 		else
 		{
 			game.gotoNextLeader();
-			game.setGameState(new WaitingForProposal(game.getCurrentLeader()));
+			game.setGameState(new ProposeState(game.getCurrentLeader()));
 		}
 	}
 }
