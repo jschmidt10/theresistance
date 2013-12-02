@@ -4,7 +4,6 @@ import java.util.LinkedList;
 import java.util.List;
 
 import theresistance.core.state.GameState;
-import theresistance.core.state.WaitingForMissionResult;
 import theresistance.core.state.ProposeState;
 import theresistance.core.util.ExtraInfoBag;
 
@@ -146,7 +145,6 @@ public class Game
 	{
 		Round curRound = getCurrentRound();
 		curRound.setParticipants(proposal.getParticipants());
-		gameState = new WaitingForMissionResult(proposal.getParticipants());
 		return curRound;
 	}
 
@@ -278,7 +276,7 @@ public class Game
 		return gameState;
 	}
 
-	public void setGameState(GameState gameState)
+	public void setState(GameState gameState)
 	{
 		this.gameState = gameState;
 	}

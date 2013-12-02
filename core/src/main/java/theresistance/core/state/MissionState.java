@@ -13,13 +13,13 @@ import theresistance.core.Game;
 import theresistance.core.Mission.Result;
 import theresistance.core.Player;
 
-public class WaitingForMissionResult extends GameState
+public class MissionState extends GameState
 {
 	Set<String> participants = new TreeSet<String>();
 	Set<String> waitingForPlayers = new TreeSet<String>();
 	Map<Player, Result> results = new TreeMap<>();
 	
-	public WaitingForMissionResult(Collection<Player> participants)
+	public MissionState(Collection<Player> participants)
 	{
 		for (Player player : participants)
 		{

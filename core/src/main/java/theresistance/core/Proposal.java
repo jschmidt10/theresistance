@@ -16,12 +16,14 @@ public class Proposal
 	}
 
 	private final int totalPlayers;
-	private Player leader;
+	private final Player leader;
+
 	private List<Player> participants;
 	private Map<Player, Vote> votes = new TreeMap<>();
 
-	public Proposal(int totalPlayers)
+	public Proposal(Player leader, int totalPlayers)
 	{
+		this.leader = leader;
 		this.totalPlayers = totalPlayers;
 	}
 
@@ -90,13 +92,5 @@ public class Proposal
 	public Player getLeader()
 	{
 		return leader;
-	}
-
-	/**
-	 * @param leader
-	 */
-	public void setLeader(Player leader)
-	{
-		this.leader = leader;
 	}
 }

@@ -2,60 +2,56 @@ package theresistance.core.state;
 
 import java.util.Collection;
 import java.util.Map;
-import java.util.Set;
 import java.util.TreeMap;
-import java.util.TreeSet;
 
 import theresistance.core.Game;
 import theresistance.core.Player;
 import theresistance.core.Proposal;
 import theresistance.core.Proposal.Vote;
 
-public class WaitingForProposalVotes extends GameState
+/**
+ * State where players vote on a proposal
+ */
+public class VoteState extends GameState
 {
 	private Proposal proposal;
-	private Set<String> playersLeftToVote;
 	private Map<Player, Vote> votes = new TreeMap<>();
 
-	public WaitingForProposalVotes(Collection<Player> players, Proposal proposal)
+	public VoteState(Collection<Player> players, Proposal proposal)
 	{
 		this.proposal = proposal;
-		playersLeftToVote = new TreeSet<String>();
+
 		for (Player player : players)
 		{
-			playersLeftToVote.add(player.getName());
+			votes.put(player, null);
 		}
-	}
-
-	public Set<String> getPlayersLeftToVote()
-	{
-		return playersLeftToVote;
 	}
 
 	public void setVote(Player player, Vote vote)
 	{
 		votes.put(player, vote);
-		playersLeftToVote.remove(player);
 	}
 
 	@Override
 	public boolean isFinished()
 	{
-		return playersLeftToVote.isEmpty();
+		return !votes.values().contains(null);
 	}
-	
+
 	@Override
 	public void advance(Game game)
 	{
 		proposal.setVotes(votes);
+
 		if (proposal.isApproved())
 		{
 			game.send(proposal);
+			game.setState(new MissionState(proposal.getParticipants()));
 		}
 		else
 		{
 			game.gotoNextLeader();
-			game.setGameState(new ProposeState(game.getCurrentLeader()));
+			game.setState(new ProposeState(game.getCurrentLeader()));
 		}
 	}
 }

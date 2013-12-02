@@ -12,17 +12,17 @@ import theresistance.core.Round;
  */
 public class ProposeState extends GameState
 {
-	private Player leader;
+	private final Player leader;
 	private List<Player> participants;
 
-	public ProposeState(Player player)
+	public ProposeState(Player leader)
 	{
-		this.leader = player;
+		this.leader = leader;
 	}
 
-	public String getLeader()
+	public void setParticipants(List<Player> participants)
 	{
-		return leader.getName();
+		this.participants = participants;
 	}
 
 	@Override
@@ -31,28 +31,23 @@ public class ProposeState extends GameState
 		return participants != null;
 	}
 
-	public void setProposal(List<Player> participants)
-	{
-		this.participants = participants;
-	}
-
 	@Override
 	public void advance(Game game)
 	{
 		Round round = game.getCurrentRound();
-		Proposal proposal = new Proposal(game.getNumPlayers());
+		Proposal proposal = new Proposal(leader, game.getNumPlayers());
 		proposal.setParticipants(participants);
-		proposal.setLeader(game.getCurrentLeader());
 		round.addProposal(proposal);
 
 		// check hammer
 		if (round.getProposalIndex() == 5)
 		{
 			game.send(proposal);
+			game.setState(new MissionState(proposal.getParticipants()));
 		}
 		else
 		{
-			game.setGameState(new WaitingForProposalVotes(game.getPlayers(), proposal));
+			game.setState(new VoteState(game.getPlayers(), proposal));
 		}
 	}
 }
