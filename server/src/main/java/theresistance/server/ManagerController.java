@@ -3,6 +3,7 @@ package theresistance.server;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -17,20 +18,27 @@ import theresistance.core.Role;
 import theresistance.server.conf.DynamicGameOptions;
 import theresistance.server.conf.RoleFormatter;
 import theresistance.server.conf.RuleFormatter;
-import theresistance.server.view.GamePlayerView;
 import theresistance.server.view.LobbyView;
 import theresistance.server.view.PlayerView;
 
 /**
- * Controller for all new game based interactions
+ * Controller for configuration end points
  */
 @Controller
-public class GameController
+public class ManagerController
 {
-	private final DynamicGameOptions<Role> roleOpts = new DynamicGameOptions<>(Role.class, new RoleFormatter());
-	private final DynamicGameOptions<PostRoundEventHandler> ruleOpts = new DynamicGameOptions<>(PostRoundEventHandler.class,
-			new RuleFormatter());
-	private final GameRegistry registry = new GameRegistry();
+	private final DynamicGameOptions<Role> roleOpts = new DynamicGameOptions<>(Role.class,
+			new RoleFormatter());
+	private final DynamicGameOptions<PostRoundEventHandler> ruleOpts = new DynamicGameOptions<>(
+			PostRoundEventHandler.class, new RuleFormatter());
+
+	private final GameRegistry registry;
+
+	@Autowired
+	public ManagerController(GameRegistry registry)
+	{
+		this.registry = registry;
+	}
 
 	@RequestMapping(value = "rules", produces = "application/json")
 	@ResponseBody
@@ -48,9 +56,9 @@ public class GameController
 
 	@RequestMapping(value = "newgame", produces = "application/json")
 	@ResponseBody
-	public StatusResponse createNewGame(@RequestParam("owner") String owner, @RequestParam("role") List<String> roles,
-			@RequestParam("numPlayers") List<Integer> numPlayers, @RequestParam("numFailures") List<Integer> numFailures,
-			@RequestParam("rule") List<String> rules)
+	public StatusResponse createNewGame(@RequestParam("owner") String owner,
+			@RequestParam("role") List<String> roles, @RequestParam("numPlayers") List<Integer> numPlayers,
+			@RequestParam("numFailures") List<Integer> numFailures, @RequestParam("rule") List<String> rules)
 	{
 		GameConfig config = new GameConfig();
 
@@ -63,13 +71,13 @@ public class GameController
 
 		return StatusResponse.success(id, null);
 	}
-	
+
 	@RequestMapping(value = "delete", produces = "application/json")
 	@ResponseBody
 	public StatusResponse deleteGame(@RequestParam String gameId)
 	{
 		Game game = registry.getGame(gameId);
-		if (game != null) 
+		if (game != null)
 		{
 			registry.unregister(game);
 		}
@@ -95,10 +103,11 @@ public class GameController
 	public StatusResponse getPlayers(@RequestParam String gameId)
 	{
 		Game game = registry.getGame(gameId);
-		if (game == null) {
+		if (game == null)
+		{
 			return StatusResponse.failure("Game doesn't exist", gameId);
 		}
-		
+
 		List<PlayerView> views = new LinkedList<PlayerView>();
 
 		for (Player player : game.getPlayers())
@@ -107,55 +116,6 @@ public class GameController
 		}
 
 		return StatusResponse.success(gameId, views);
-	}
-
-	@RequestMapping(value = "join", produces = "application/json")
-	@ResponseBody
-	public StatusResponse joinGame(@RequestParam String gameId, @RequestParam String player)
-	{
-		Game game = registry.getGame(gameId);
-		game.addPlayer(new Player(player));
-
-		if (game.isReady())
-		{
-			game.start();
-		}
-
-		return StatusResponse.success(gameId, null);
-	}
-	
-	@RequestMapping(value = "leave", produces = "application/json")
-	@ResponseBody
-	public StatusResponse leaveGame(@RequestParam String gameId, @RequestParam String player)
-	{
-		Game game = registry.getGame(gameId);
-		Player thisPlayer = game.getPlayer(player);
-		game.removePlayer(thisPlayer);
-		return StatusResponse.success(gameId, null);
-	}
-
-	@RequestMapping(value = "config", produces = "application/json")
-	@ResponseBody
-	public StatusResponse getConfig(@RequestParam String gameId)
-	{
-		Game game = registry.getGame(gameId);
-		return StatusResponse.success(gameId, game.getConfig());
-	}
-
-	@RequestMapping(value = "gamePlayers", produces = "application/json")
-	@ResponseBody
-	public StatusResponse getGamePlayers(@RequestParam String gameId, @RequestParam String player)
-	{
-		Game game = registry.getGame(gameId);
-		return StatusResponse.success(gameId, new GamePlayerView(game, player));
-	}
-	
-	@RequestMapping(value = "gameState", produces = "application/json")
-	@ResponseBody
-	public StatusResponse getGameState(@RequestParam String gameId)
-	{
-		Game game = registry.getGame(gameId);
-		return StatusResponse.success(gameId, game.getGameState());
 	}
 
 	private List<Mission> toMissions(List<Integer> numPlayers, List<Integer> numFailures)

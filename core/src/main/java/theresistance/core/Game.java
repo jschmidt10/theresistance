@@ -51,8 +51,8 @@ public class Game
 	{
 		return id;
 	}
-	
-	public void gotoNextLeader() 
+
+	public void gotoNextLeader()
 	{
 		curLeader = (curLeader + 1) % players.size();
 	}
@@ -77,7 +77,7 @@ public class Game
 			players.add(player);
 		}
 	}
-	
+
 	/**
 	 * Removes a player from the game.
 	 * 
@@ -97,8 +97,8 @@ public class Game
 	public void start()
 	{
 		new RoleAssigner().assign(players, config.getRoles());
-		
-		for (Player p : players) 
+
+		for (Player p : players)
 		{
 			playersByName.put(p.getName(), p);
 		}
@@ -112,7 +112,7 @@ public class Game
 		{
 			handler.init(this);
 		}
-		
+
 		if (gameState == null)
 		{
 			gameState = new WaitingForProposal(getCurrentLeader());
@@ -139,7 +139,7 @@ public class Game
 	{
 		if (gameState instanceof WaitingForProposal)
 		{
-			WaitingForProposal state = (WaitingForProposal)gameState;
+			WaitingForProposal state = (WaitingForProposal) gameState;
 			state.setProposal(participants);
 			state.advanceGameState(this);
 			return getCurrentRound().getLastProposal();
@@ -176,8 +176,8 @@ public class Game
 			handler.roundFinished();
 		}
 		curRound++;
-		
-		// If the post round event handlers haven't changed 
+
+		// If the post round event handlers haven't changed
 		// the game state, the we can advance it by default.
 		if (gameState == current)
 		{
@@ -295,5 +295,10 @@ public class Game
 	public void setGameState(GameState gameState)
 	{
 		this.gameState = gameState;
+	}
+
+	public Round getRound(int index)
+	{
+		return rounds.get(index);
 	}
 }

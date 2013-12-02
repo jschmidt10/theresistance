@@ -11,28 +11,28 @@ public class WaitingForProposal extends GameState
 {
 	private Player leader;
 	private List<Player> participants;
-	
+
 	public WaitingForProposal(Player player)
 	{
 		this.leader = player;
 	}
-	
+
 	public String getLeader()
 	{
 		return leader.getName();
 	}
-	
+
 	@Override
 	public boolean isFinished()
 	{
 		return participants != null;
 	}
-	
+
 	public void setProposal(List<Player> participants)
 	{
 		this.participants = participants;
 	}
-	
+
 	@Override
 	public void advanceGameState(Game game)
 	{
@@ -40,7 +40,7 @@ public class WaitingForProposal extends GameState
 		Proposal proposal = new Proposal(game.getNumPlayers());
 		proposal.setParticipants(participants);
 		round.addProposal(proposal);
-		
+
 		// check hammer
 		if (round.getProposalIndex() == 5)
 		{
