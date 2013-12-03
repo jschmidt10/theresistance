@@ -16,7 +16,7 @@ public class Game
 	private final GameConfig config;
 	private final List<Round> rounds = new LinkedList<>();
 	private List<Player> players = new LinkedList<>();
-	private GameState gameState;
+	private GameState<?> gameState;
 
 	private final ExtraInfoBag extraInfo = new ExtraInfoBag();
 
@@ -98,11 +98,9 @@ public class Game
 			handler.init(this);
 		}
 
-		if (gameState == null)
-		{
-			gameState = new ProposeState(getCurrentLeader());
-		}
-
+		// TODO: the fact that game needs to know about a specific state seems
+		// wrong but not sure how to fix right now
+		gameState = new ProposeState(getCurrentLeader());
 		isStarted = true;
 	}
 
@@ -115,59 +113,18 @@ public class Game
 	}
 
 	/**
-	 * make the next proposal
-	 * 
-	 * @param participants
-	 * @return proposal
-	 */
-	public Proposal propose(List<Player> participants)
-	{
-		if (gameState instanceof ProposeState)
-		{
-			ProposeState state = (ProposeState) gameState;
-			state.setProposal(participants);
-			state.advance(this);
-			return getCurrentRound().getLastProposal();
-		}
-		else
-		{
-			throw new IllegalStateException("Cannot propose a mission at this time.");
-		}
-	}
-
-	/**
-	 * sends the proposal on the mission
-	 * 
-	 * @param proposal
-	 * @return mission
-	 */
-	public Round send(Proposal proposal)
-	{
-		Round curRound = getCurrentRound();
-		curRound.setParticipants(proposal.getParticipants());
-		return curRound;
-	}
-
-	/**
 	 * progresses the game to the next round and calls the post round event
 	 * handlers.
 	 */
 	public void completeRound()
 	{
-		GameState current = gameState;
 		for (PostRoundEventHandler handler : config.getHandlers())
 		{
 			handler.roundFinished();
 		}
-		curRound++;
 
-		// If the post round event handlers haven't changed
-		// the game state, the we can advance it by default.
-		if (gameState == current)
-		{
-			gotoNextLeader();
-			gameState = new ProposeState(getCurrentLeader());
-		}
+		curRound++;
+		gotoNextLeader();
 	}
 
 	/**
@@ -271,14 +228,19 @@ public class Game
 		return players.get(curLeader);
 	}
 
-	public GameState getGameState()
+	public void setState(GameState<?> gameState)
+	{
+		this.gameState = gameState;
+	}
+
+	public GameState<?> getState()
 	{
 		return gameState;
 	}
 
-	public void setState(GameState gameState)
+	public <T> T getState(Class<T> expectedState)
 	{
-		this.gameState = gameState;
+		return expectedState.cast(gameState);
 	}
 
 	public Round getRound(int index)

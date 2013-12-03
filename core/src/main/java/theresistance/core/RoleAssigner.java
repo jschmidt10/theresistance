@@ -1,6 +1,5 @@
 package theresistance.core;
 
-import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
@@ -28,15 +27,5 @@ public class RoleAssigner
 			players.get(i).setRole(clonedRoles.get(j));
 			clonedRoles.remove(j);
 		}
-	}
-
-	private List<Role> cloneToList(Role[] roles)
-	{
-		List<Role> roleList = new ArrayList<Role>(roles.length);
-		for (Role role : roles)
-		{
-			roleList.add(role);
-		}
-		return roleList;
 	}
 }

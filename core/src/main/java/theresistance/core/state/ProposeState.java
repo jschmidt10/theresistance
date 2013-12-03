@@ -10,7 +10,7 @@ import theresistance.core.Round;
 /**
  * The proposal portion of a game
  */
-public class ProposeState extends GameState
+public class ProposeState extends GameState<ProposeAction>
 {
 	private final Player leader;
 	private List<Player> participants;
@@ -20,9 +20,10 @@ public class ProposeState extends GameState
 		this.leader = leader;
 	}
 
-	public void setParticipants(List<Player> participants)
+	@Override
+	public void act(ProposeAction action)
 	{
-		this.participants = participants;
+		this.participants = action.getPlayers();
 	}
 
 	@Override
@@ -42,7 +43,7 @@ public class ProposeState extends GameState
 		// check hammer
 		if (round.getProposalIndex() == 5)
 		{
-			game.send(proposal);
+			round.setParticipants(proposal.getParticipants());
 			game.setState(new MissionState(proposal.getParticipants()));
 		}
 		else

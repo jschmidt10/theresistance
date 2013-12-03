@@ -8,11 +8,12 @@ import theresistance.core.Game;
 import theresistance.core.Player;
 import theresistance.core.Proposal;
 import theresistance.core.Proposal.Vote;
+import theresistance.core.Round;
 
 /**
  * State where players vote on a proposal
  */
-public class VoteState extends GameState
+public class VoteState extends GameState<VoteAction>
 {
 	private Proposal proposal;
 	private Map<Player, Vote> votes = new TreeMap<>();
@@ -27,9 +28,10 @@ public class VoteState extends GameState
 		}
 	}
 
-	public void setVote(Player player, Vote vote)
+	@Override
+	public void act(VoteAction action)
 	{
-		votes.put(player, vote);
+		votes.put(action.getPlayer(), action.getVote());
 	}
 
 	@Override
@@ -45,7 +47,8 @@ public class VoteState extends GameState
 
 		if (proposal.isApproved())
 		{
-			game.send(proposal);
+			Round round = game.getCurrentRound();
+			round.setParticipants(proposal.getParticipants());
 			game.setState(new MissionState(proposal.getParticipants()));
 		}
 		else

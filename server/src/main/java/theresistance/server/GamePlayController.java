@@ -1,5 +1,6 @@
 package theresistance.server;
 
+import java.util.LinkedList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,8 +10,16 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import theresistance.core.Game;
+import theresistance.core.Mission.Result;
 import theresistance.core.Player;
+import theresistance.core.Proposal.Vote;
 import theresistance.core.Round;
+import theresistance.core.state.MissionResultAction;
+import theresistance.core.state.MissionState;
+import theresistance.core.state.ProposeAction;
+import theresistance.core.state.ProposeState;
+import theresistance.core.state.VoteAction;
+import theresistance.core.state.VoteState;
 import theresistance.server.view.GamePlayerView;
 
 /**
@@ -73,7 +82,7 @@ public class GamePlayController
 	public StatusResponse getGameState(@RequestParam String gameId)
 	{
 		Game game = registry.getGame(gameId);
-		return StatusResponse.success(gameId, game.getGameState());
+		return StatusResponse.success(gameId, game.getState());
 	}
 
 	@RequestMapping(value = "proposals", produces = "application/json")
@@ -101,5 +110,45 @@ public class GamePlayController
 	public StatusResponse propose(@RequestParam String gameId, @RequestParam("players") List<String> players)
 	{
 		Game game = registry.getGame(gameId);
+		ProposeState state = game.getState(ProposeState.class);
+		state.progress(game, new ProposeAction(toPlayers(game, players)));
+
+		return StatusResponse.success(gameId, null);
+	}
+
+	@RequestMapping(value = "vote", produces = "application/json")
+	@ResponseBody
+	public StatusResponse vote(@RequestParam String gameId, @RequestParam String player,
+			@RequestParam String vote)
+	{
+		Game game = registry.getGame(gameId);
+		VoteState state = game.getState(VoteState.class);
+		state.progress(game, new VoteAction(game.getPlayer(player), Vote.valueOf(vote)));
+
+		return StatusResponse.success(gameId, null);
+	}
+
+	@RequestMapping(value = "mission", produces = "application/json")
+	@ResponseBody
+	public StatusResponse goOnMission(@RequestParam String gameId, @RequestParam String player,
+			@RequestParam String result)
+	{
+		Game game = registry.getGame(gameId);
+		MissionState state = game.getState(MissionState.class);
+		state.progress(game, new MissionResultAction(game.getPlayer(player), Result.valueOf(result)));
+
+		return StatusResponse.success(gameId, null);
+	}
+
+	private List<Player> toPlayers(Game game, List<String> players)
+	{
+		List<Player> results = new LinkedList<>();
+
+		for (String name : players)
+		{
+			results.add(game.getPlayer(name));
+		}
+
+		return results;
 	}
 }
