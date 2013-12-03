@@ -1,6 +1,5 @@
 package theresistance.core;
 
-import theresistance.core.util.ExtraInfoBag;
 
 /**
  * A human player currently playing a game
@@ -9,7 +8,6 @@ public class Player implements Comparable<Player>
 {
 	private String name;
 	private Role role;
-	private ExtraInfoBag extraInfo = new ExtraInfoBag();
 
 	public Player(String name)
 	{
@@ -59,15 +57,5 @@ public class Player implements Comparable<Player>
 	public int hashCode()
 	{
 		return name.hashCode();
-	}
-
-	public ExtraInfoBag getExtraInfo()
-	{
-		return extraInfo;
-	}
-
-	public void setExtraInfo(ExtraInfoBag extraInfo)
-	{
-		this.extraInfo = extraInfo;
 	}
 }

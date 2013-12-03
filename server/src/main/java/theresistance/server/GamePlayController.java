@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import theresistance.core.Game;
 import theresistance.core.Mission.Result;
 import theresistance.core.Player;
+import theresistance.core.Proposal;
 import theresistance.core.Proposal.Vote;
 import theresistance.core.Round;
 import theresistance.core.state.MissionResultAction;
@@ -21,6 +22,7 @@ import theresistance.core.state.ProposeState;
 import theresistance.core.state.VoteAction;
 import theresistance.core.state.VoteState;
 import theresistance.server.view.GamePlayerView;
+import theresistance.server.view.ProposalView;
 
 /**
  * Controller for game play end points
@@ -88,11 +90,24 @@ public class GamePlayController
 	@RequestMapping(value = "proposals", produces = "application/json")
 	@ResponseBody
 	public StatusResponse getProposals(@RequestParam String gameId, @RequestParam("round") int index)
+			throws Exception
 	{
 		Game game = registry.getGame(gameId);
 		Round round = game.getRound(index);
 
-		return StatusResponse.success(gameId, round.getProposals());
+		return StatusResponse.success(gameId, getProposalViews(round.getProposals(), round));
+	}
+
+	private List<ProposalView> getProposalViews(List<Proposal> proposals, Round round)
+	{
+		List<ProposalView> views = new LinkedList<>();
+
+		for (Proposal proposal : proposals)
+		{
+			views.add(new ProposalView(proposal, round));
+		}
+
+		return views;
 	}
 
 	@RequestMapping(value = "results", produces = "application/json")
