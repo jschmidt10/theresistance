@@ -1,4 +1,5 @@
 
+//var clientGameConfig = {};
 
 function loadDisplay(gameId, userName) {
 	Ext.create('Ext.container.Viewport', {
@@ -62,8 +63,26 @@ function loadDisplay(gameId, userName) {
 					}]
 				}, {
 					xtype: 'panel',
-					title: 'Game Progress',
-					flex: 1
+					title: 'Missions',
+					flex: 1,
+					itemId: 'missions',
+					layout: {
+						type: 'hbox',
+						align: 'stretch'
+					},
+					defaults: { 
+						margin: '10', 
+						xtype: 'button', 
+						flex: 1,
+						handler: function() {
+							Ext.Msg.alert("Clicked", "Mission " + this.mission);
+						}
+					},
+					items: [{ mission: 0, text: 'Mission 1' }, 
+					        { mission: 1, text: 'Mission 2' }, 
+					        { mission: 2, text: 'Mission 3' }, 
+					        { mission: 3, text: 'Mission 4' }, 
+					        { mission: 4, text: 'Mission 5' }]
 				}, {
 					xtype: 'panel',
 					margin: '0',
@@ -131,6 +150,30 @@ function loadDisplay(gameId, userName) {
 		});
 	});
 	loadPlayersTask.task.delay(1000);
+	
+	Ext.Ajax.request({
+		url: '/server/config',
+		params: { gameId: gameId },
+		success: function(response) {
+			var wrapper = Ext.JSON.decode(response.responseText);
+			if (!isSuccessful("Game Configuration Load", wrapper)) {
+				return;
+			}
+			clientGameConfig = wrapper.data;
+			setMissionButtonText();
+		}
+	});
+}
+
+function setMissionButtonText() {
+	var missionButtons = Ext.ComponentQuery.query('#missions')[0].query('button');
+	var missions = clientGameConfig.missions;
+	for (var i = 0; i < missionButtons.length; i++) {
+		missionButtons[i].setText(
+				"Mission " + (i + 1) + "<br/>" + 
+				"Players Needed: " + missions[i].numParticipants + "<br/>" +
+				"Fails Needed: " + missions[i].requiredFails);
+	}
 }
 
 Ext.onReady(function() {
