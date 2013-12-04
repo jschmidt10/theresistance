@@ -1,5 +1,5 @@
 
-//var clientGameConfig = {};
+var clientGameConfig = {};
 
 function loadDisplay(gameId, userName) {
 	Ext.create('Ext.container.Viewport', {
