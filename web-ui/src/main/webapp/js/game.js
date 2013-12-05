@@ -2,6 +2,88 @@
 var clientGameConfig = {};
 
 function loadDisplay(gameId, userName) {
+	
+	function setButtonState(thisButton, otherButton) {
+		thisButton.setDisabled(true);
+		otherButton.setDisabled(false);
+	}
+	
+	function setButtonVisibility(actionOne, actionTwo) {
+		Ext.ComponentQuery.query('#actionOne')[0].setVisible(actionOne);
+		Ext.ComponentQuery.query('#actionTwo')[0].setVisible(actionTwo);
+		Ext.ComponentQuery.query('#actionOne')[0].setDisabled(false);
+		Ext.ComponentQuery.query('#actionTwo')[0].setDisabled(false);
+	}
+	function setButtonText(actionOne, actionTwo) {
+		Ext.ComponentQuery.query('#actionOne')[0].setText(actionOne);
+		Ext.ComponentQuery.query('#actionTwo')[0].setText(actionTwo);
+	}
+	
+	function setProposeHandler(numberOfParticipants) {
+		Ext.ComponentQuery.query('#actionOne')[0].setHandler(function() {
+			showProposeMissionDialog(numberOfParticipants);
+		});
+		Ext.ComponentQuery.query('#actionTwo')[0].setHandler(function(){});
+	}
+	
+	function setApprovalHandlers() {
+		var actionOne = Ext.ComponentQuery.query('#actionOne')[0];
+		var actionTwo = Ext.ComponentQuery.query('#actionTwo')[0];
+		actionOne.setHandler(function() {
+			submitApproval('SEND', actionOne, actionTwo);
+		});
+		actionTwo.setHandler(function() {
+			submitApproval('DONT_SEND', actionOne, actionTwo);
+		});
+	}
+	
+	function setMissionResultHandlers() {
+		var actionOne = Ext.ComponentQuery.query('#actionOne')[0];
+		var actionTwo = Ext.ComponentQuery.query('#actionTwo')[0];
+		actionOne.setHandler(function() {
+			submitMissionResult('PASS', actionOne, actionTwo);
+		});
+		actionTwo.setHandler(function() {
+			submitMissionResult('FAIL', actionOne, actionTwo);
+		});
+	}
+	
+	function showProposeMissionDialog(numberOfParticipants) {
+		// TODO: add this
+	}
+	
+	function submitApproval(approval, thisButotn, otherButton) {
+		Ext.Ajax.request({
+			url: '/server/vote',
+			params: {
+				gameId: gameId,
+				player: userName,
+				vote: approval
+			},
+			success: function(response) {
+				var wrapper = Ext.JSON.decode(response.responseText);
+				isSuccessful("Submit Proposal Approval", wrapper);
+				setButtonState(thisButotn, otherButton);
+			}
+		});
+	}
+	
+	function submitMissionResult(result, thisButton, otherButton) {
+		Ext.Ajax.request({
+			url: '/server/mission',
+			params: {
+				gameId: gameId,
+				player: userName,
+				result: result
+			},
+			success: function(response) {
+				var wrapper = Ext.JSON.decode(response.responseText);
+				isSuccessful("Submit Mission Result", wrapper);
+				setButtonState(thisButotn, otherButton);
+			}
+		});
+	}
+	
 	Ext.create('Ext.container.Viewport', {
 		layout: {
 			type: 'hbox',
@@ -46,7 +128,23 @@ function loadDisplay(gameId, userName) {
 				items: [{
 					xtype: 'panel',
 					title: 'Actions',
-					flex: 1
+					flex: 1,
+					layout: {
+						type: 'hbox',
+						align: 'stretch'
+					},
+					defaults: {
+						xtype: 'button',
+						flex: 1,
+						margins: '10'
+					},
+					items: [{
+						text: 'Action One',
+						itemId: 'actionOne'
+					}, {
+						text: 'Action Two',
+						itemId: 'actionTwo'
+					}]
 				}, {
 					xtype: 'panel',
 					title: 'Game Status',
@@ -177,6 +275,44 @@ function loadDisplay(gameId, userName) {
 		}
 		voteStore.loadData(voteHistory);
 	});
+	
+	var gameStateUpdater = {};
+	gameStateUpdater.task = new Ext.util.DelayedTask(function() {
+		Ext.Ajax.request({
+			url: '/server/gameState',
+			params: { gameId: gameId },
+			success: function(response) {
+				var wrapper = Ext.JSON.decode(response.responseText);
+				if (!isSuccessful("Game State Load", wrapper)) {
+					return;
+				}
+				var state = wrapper.data;
+				if (state.name == 'ProposeState') {
+					if (state.leader == userName) {
+						setButtonText('Propose Mission', 'Action Two');
+						setButtonVisibility(true, false);
+						setProposeHandler(state.numParticipants);
+					} else {
+						setButtonVisibility(false, false);
+					}
+				} else if (state.name == 'VoteState') {
+					setButtonVisibility(true, true);
+					setButtonText('Accept Mission', 'Reject Mission');
+					setApprovalHandlers();
+				} else if (state.name == 'MissionResultState') {
+					// TODO: check if this player is on the mission.
+					setButtonVisibility(true, true);
+					setButtonText('Pass Mission', 'Fail Mission');
+					setMissionResultHandlers();
+				} else {
+					setButtonVisibility(false, false);
+					setButtonText('Action One', 'Action Two');
+				}
+				gameStateUpdater.delay(1000);
+			}
+		});
+	});
+	gameStateUpdater.delay(1);
 	
 	var loadPlayersTask = {};
 	loadPlayersTask.task = new Ext.util.DelayedTask(function() {
