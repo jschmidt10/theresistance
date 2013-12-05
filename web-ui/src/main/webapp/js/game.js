@@ -97,6 +97,7 @@ function loadDisplay(gameId, userName) {
 					items: [{
 						xtype: 'grid',
 						title: 'Proposal History',
+						itemId: 'proposalGrid',
 						flex: 1,
 						columns: [{ text: 'Index', dataIndex: 'index', width: '30' },
 						          { text: 'Leader', dataIndex: 'leader', flex: 1 }, 
@@ -159,6 +160,22 @@ function loadDisplay(gameId, userName) {
 				}]
 			}]
 		}]
+	});
+	
+	var proposalsGrid = Ext.ComponentQuery.query('proposalGrid')[0]; 
+	proposalsGrid.getSelectionModel.on('selectionchanged', function(source, selected) {
+		var voteStore = Ext.StoreManager.lookup('votingHistory');
+		var voteHistory = [];
+		if (selected.length == 0) {
+			voteStore.removeAll();
+			return;
+		}
+		var votes = selected[0].data.votes;
+		for (var player in votes) {
+			var voteText = (votes[player] == 'SEND' ? 'Accept' : 'Reject');
+			Ext.Array.push(voteHistory, { name: player, vote: voteText });
+		}
+		voteStore.loadData(voteHistory);
 	});
 	
 	var loadPlayersTask = {};
