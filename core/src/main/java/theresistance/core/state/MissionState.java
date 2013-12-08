@@ -16,12 +16,14 @@ import theresistance.core.Player;
 public class MissionState extends GameState<MissionResultAction>
 {
 	Map<Player, Result> results = new TreeMap<>();
+	Set<String> leftToVote = new TreeSet<>();
 
 	public MissionState(Collection<Player> participants)
 	{
 		for (Player player : participants)
 		{
 			results.put(player, null);
+			leftToVote.add(player.getName());
 		}
 	}
 
@@ -29,12 +31,13 @@ public class MissionState extends GameState<MissionResultAction>
 	public void act(MissionResultAction action)
 	{
 		results.put(action.getPlayer(), action.getResult());
+		leftToVote.remove(action.getPlayer().getName());
 	}
 
 	@Override
 	public boolean isFinished()
 	{
-		return !results.values().contains(null);
+		return leftToVote.isEmpty();
 	}
 	
 	public Set<String> getParticipants() 
@@ -45,6 +48,11 @@ public class MissionState extends GameState<MissionResultAction>
 			participants.add(player.getName());
 		}
 		return participants;
+	}
+	
+	public Set<String> getPlayersLeftToVote()
+	{
+		return leftToVote;
 	}
 
 	@Override

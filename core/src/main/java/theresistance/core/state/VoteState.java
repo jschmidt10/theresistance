@@ -2,7 +2,9 @@ package theresistance.core.state;
 
 import java.util.Collection;
 import java.util.Map;
+import java.util.Set;
 import java.util.TreeMap;
+import java.util.TreeSet;
 
 import theresistance.core.Game;
 import theresistance.core.Player;
@@ -17,6 +19,7 @@ public class VoteState extends GameState<VoteAction>
 {
 	private Proposal proposal;
 	private Map<Player, Vote> votes = new TreeMap<>();
+	private Set<String> leftToVote = new TreeSet<>();
 
 	public VoteState(Collection<Player> players, Proposal proposal)
 	{
@@ -25,6 +28,7 @@ public class VoteState extends GameState<VoteAction>
 		for (Player player : players)
 		{
 			votes.put(player, null);
+			leftToVote.add(player.getName());
 		}
 	}
 
@@ -32,12 +36,19 @@ public class VoteState extends GameState<VoteAction>
 	public void act(VoteAction action)
 	{
 		votes.put(action.getPlayer(), action.getVote());
+		leftToVote.remove(action.getPlayer().getName());
 	}
 
 	@Override
 	public boolean isFinished()
 	{
-		return !votes.values().contains(null);
+		return leftToVote.isEmpty();
+	}
+	
+	public Set<String> getPlayersLeftToVote()
+	{
+		return leftToVote;
+		
 	}
 
 	@Override
