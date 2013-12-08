@@ -37,6 +37,11 @@ public class ProposeState extends GameState<ProposeAction>
 		return leader.getName();
 	}
 	
+	public int getNumberOfParticipants()
+	{
+		return participants.size();
+	}
+	
 	@Override
 	public void advance(Game game)
 	{
