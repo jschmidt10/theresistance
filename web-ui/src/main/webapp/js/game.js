@@ -54,7 +54,104 @@ function loadDisplay(gameId, userName) {
 	}
 	
 	function showProposeMissionDialog(numberOfParticipants) {
-		// TODO: add this
+		var playersStore = Ext.StoreManager.lookup('playersStore');
+		var proposalWindowItems = [];
+		playersStore.each(function(player) {
+			Ext.Array.push(proposalWindowItems, { 
+				boxLabel: player.data.name,
+				inputValue: player.data.name
+			});
+		});
+		
+		function setDisabledAll(items, disabled) {
+			Ext.Array.each(items, function(item) {
+				if (!item.getValue()) {
+					item.setDisabled(disabled);
+				}
+			});
+		}
+		
+		function playerSelectionChanged() {
+			var window = Ext.ComponentQuery.query('#proposalWindow')[0];
+			var playersLeftLabel = window.down('#playersLeftLabel');
+			var checkboxes = window.query('checkbox');
+			var proposalButton = window.down('button');
+			var selected = 0;
+			Ext.Array.each(checkboxes, function(checkbox) { 
+				if (checkbox.getValue()) {
+					selected++;
+				}
+			});
+			var left = numberOfParticipants - selected;
+			var message = '';
+			if (left <= 0) {
+				message = 'All players have been selected.';
+				setDisabledAll(checkboxes, true);
+				proposalButton.setDisabled(false);
+			} else {
+				message = 'Select ' + left + ' more players.';
+				setDisabledAll(checkboxes, false);
+				proposalButton.setDisabled(true);
+			}
+			playersLeftLabel.setText(message);
+		}
+		
+		Ext.Array.push(proposalWindowItems, { 
+			xtype: 'label',
+			itemId: 'playersLeftLabel',
+			text: 'Select ' + numberOfParticipants + ' more players.'
+		});
+		Ext.Array.push(proposalWindowItems, { 
+			xtype: 'button',
+			text: 'Propose Mission',
+			disabled: true,
+			handler: function() {
+				var window = Ext.ComponentQuery.query('#proposalWindow')[0];
+				var checkboxes = window.query('checkbox');
+				var left = numberOfParticipants;
+				var selected = [];
+				Ext.Array.each(checkboxes, function(checkbox) {
+					if (left > 0) {
+						if (checkbox.getValue()) {
+							left--;
+							Ext.Array.push(selected, checkbox.getSubmitValue());
+						}
+					}
+				});
+				Ext.Ajax.request({
+					url: '/server/propose',
+					params: {
+						gameId: gameId,
+						players: selected
+					},
+					success: function(response) {
+						var wrapper = Ext.JSON.decode(response.responseText);
+						if (isSuccessful("Propose Mission", wrapper)) {
+							window.close();
+						}
+					}
+				});
+			}
+		});
+		Ext.create('Ext.window.Window', {
+		    title: 'Propose Mission',
+		    itemId: 'proposalWindow',
+		    modal: true,
+		    width: 400,
+		    defaults: { 
+		    	padding: '5',
+		    	xtype: 'checkbox',
+		    	margin: '0 0 0 4',
+		    	listeners: {
+		    		change: playerSelectionChanged
+		    	}
+		    },
+		    layout: { 
+		    	type: 'vbox',
+		    	align: 'stretch'
+		    },
+		    items: proposalWindowItems
+		}).show();
 	}
 	
 	function submitApproval(approval, thisButotn, otherButton) {
@@ -368,7 +465,7 @@ function loadDisplay(gameId, userName) {
 					if (state.leader == userName) {
 						setButtonText('Propose Mission', 'Action Two');
 						setButtonVisibility(true, false);
-						setProposeHandler(state.numParticipants);
+						setProposeHandler(state.numberOfParticipants);
 					} else {
 						setButtonVisibility(false, false);
 					}
@@ -399,57 +496,6 @@ function loadDisplay(gameId, userName) {
 		});
 	});
 	gameStateUpdater.task.delay(1);
-	
-	var loadPlayersTask = {};
-	loadPlayersTask.task = new Ext.util.DelayedTask(function() {
-		Ext.Ajax.request({
-			url: '/server/gamePlayers',
-			params: {
-				gameId: gameId,
-				player: userName
-			},
-			success: function(response) {
-				var wrapper = Ext.JSON.decode(response.responseText);
-				if (!isSuccessful("Player Info Load", wrapper)) {
-					return;
-				}
-				var playersStore = Ext.StoreManager.lookup('playersStore');
-				if (playersStore.getCount() == 0) {
-					var playersInfo = wrapper.data;
-					var players = [];
-					for (var i = 0; i < playersInfo.order.length; i++) {
-						var name = playersInfo.order[i];
-						Ext.Array.push(players, { 
-							position: (i + 1), 
-							name: name, 
-							role: playersInfo.roles[name] 
-						});
-					}
-					playersStore.loadData(players);
-				}
-				
-				loadPlayersTask.task.delay(1000);
-			},
-			failure: function(response) {
-				Ext.Msg.alert("Player Info Load Error", response.responseText);
-			}
-		});
-	});
-	loadPlayersTask.task.delay(1000);
-	
-	Ext.Ajax.request({
-		url: '/server/config',
-		params: { gameId: gameId },
-		success: function(response) {
-			var wrapper = Ext.JSON.decode(response.responseText);
-			if (!isSuccessful("Game Configuration Load", wrapper)) {
-				return;
-			}
-			clientGameConfig = wrapper.data;
-			setMissionButtonText();
-		}
-	});
-}
 	
 	var loadPlayersTask = {};
 	loadPlayersTask.task = new Ext.util.DelayedTask(function() {
