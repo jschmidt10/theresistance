@@ -6,6 +6,12 @@ import theresistance.core.Role;
 abstract public class EvilRole implements Role
 {
 	@Override
+	public String getName()
+	{
+		return getClass().getSimpleName();
+	}
+
+	@Override
 	public Alignment getAlignment()
 	{
 		return Alignment.EVIL;
@@ -16,11 +22,11 @@ abstract public class EvilRole implements Role
 	{
 		if (other.getAlignment().isGood())
 		{
-			return "UNKNOWN";
+			return "Unknown";
 		}
 		else
 		{
-			return other.getClass().getSimpleName().toUpperCase();
+			return other.getName();
 		}
 	}
 }

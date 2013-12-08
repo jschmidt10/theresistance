@@ -9,11 +9,11 @@ public class Merlin extends GoodRole
 	{
 		if (other.getAlignment().isGood() || other instanceof Mordred)
 		{
-			return "UNKNOWN";
+			return "Unknown";
 		}
 		else
 		{
-			return "EVIL";
+			return "Evil";
 		}
 	}
 }

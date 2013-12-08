@@ -8,8 +8,14 @@ import theresistance.core.Role;
 public class LoyalServant extends GoodRole
 {
 	@Override
+	public String getName()
+	{
+		return "Loyal Servant";
+	}
+
+	@Override
 	public String identify(Role other)
 	{
-		return "UNKNOWN";
+		return "Unknown";
 	}
 }

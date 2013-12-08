@@ -124,7 +124,7 @@ public class ManagerController
 
 		for (int i = 0; i < numPlayers.size(); ++i)
 		{
-			missions.add(new Mission(numPlayers.get(i), numFailures.get(i)));
+			missions.add(new Mission(i + 1, numPlayers.get(i), numFailures.get(i)));
 		}
 
 		return missions;

@@ -10,6 +10,6 @@ public class RoleFormatter implements OptionFormatter<Role>
 	@Override
 	public String getDescription(Role option)
 	{
-		return option.getClass().getSimpleName();
+		return option.getName();
 	}
 }

@@ -124,6 +124,62 @@ function loadDisplay(gameId, userName) {
 					type: 'vbox',
 					align: 'stretch'
 				},
+				tools: [{
+					xtype: 'button',
+					text: 'Config',
+					handler: function() {
+						Ext.create('Ext.window.Window', {
+							title: 'Game Config',
+							modal: false,
+							height: 400,
+							width: 500,
+							layout: {
+								type: 'vbox',
+								align: 'stretch'
+							},
+							items: [
+							{
+								xtype: 'grid',
+								title: 'Roles',
+								flex: 1,
+								columns: [
+								    { text: 'Name', dataIndex: 'name', flex: 1 }
+								],
+								store: {
+									fields: [ 'name' ],
+									data: clientGameConfig.roles
+								}
+							},
+							{
+								xtype: 'grid',
+								title: 'Rules',
+								flex: 1,
+								columns: [
+								    { text: 'Name', dataIndex: 'ruleName', flex: 1 }
+								],
+								store: {
+									fields: [ 'ruleName' ],
+									data: clientGameConfig.handlers
+								}
+							},
+							{
+								xtype: 'grid',
+								title: 'Missions',
+								flex: 1,
+								columns: [
+								    { text: '#', dataIndex: 'index', flex: 1 },
+								    { text: '# Players', dataIndex: 'numParticipants', flex: 1 },
+								    { text: '# Failures', dataIndex: 'requiredFails', flex: 1 }
+								],
+								store: {
+									fields: [ 'index', 'numParticipants', 'requiredFails' ],
+									data: clientGameConfig.missions
+								}
+							}
+							]
+						}).show();
+					}
+				}],
 				defaults: { margin: '8' },
 				items: [{
 					xtype: 'panel',
@@ -260,8 +316,8 @@ function loadDisplay(gameId, userName) {
 		}]
 	});
 	
-	var proposalsGrid = Ext.ComponentQuery.query('proposalGrid')[0]; 
-	proposalsGrid.getSelectionModel.on('selectionchanged', function(source, selected) {
+	var proposalsGrid = Ext.ComponentQuery.query('#proposalGrid')[0]; 
+	proposalsGrid.getSelectionModel().on('selectionchanged', function(source, selected) {
 		var voteStore = Ext.StoreManager.lookup('votingHistory');
 		var voteHistory = [];
 		if (selected.length == 0) {
@@ -308,11 +364,11 @@ function loadDisplay(gameId, userName) {
 					setButtonVisibility(false, false);
 					setButtonText('Action One', 'Action Two');
 				}
-				gameStateUpdater.delay(1000);
+				gameStateUpdater.task.delay(1000);
 			}
 		});
 	});
-	gameStateUpdater.delay(1);
+	gameStateUpdater.task.delay(1);
 	
 	var loadPlayersTask = {};
 	loadPlayersTask.task = new Ext.util.DelayedTask(function() {
