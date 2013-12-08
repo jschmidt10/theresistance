@@ -12,7 +12,7 @@ public class MissionTest
 	@Test
 	public void testFailedMission()
 	{
-		Round round = new Round(0, new Mission(5, 1));
+		Round round = new Round(0, new Mission(0, 5, 1));
 		round.setResults(Arrays.asList(Result.PASS, Result.PASS, Result.PASS, Result.FAIL, Result.FAIL));
 
 		Assert.assertFalse(round.isSuccess());
@@ -21,7 +21,7 @@ public class MissionTest
 	@Test
 	public void testNotEnoughFails()
 	{
-		Round round = new Round(0, new Mission(5, 2));
+		Round round = new Round(0, new Mission(0, 5, 2));
 		round.setResults(Arrays.asList(Result.PASS, Result.PASS, Result.PASS, Result.PASS, Result.FAIL));
 
 		Assert.assertTrue(round.isSuccess());

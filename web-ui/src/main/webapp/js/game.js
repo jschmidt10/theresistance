@@ -129,6 +129,62 @@ function loadDisplay(gameId, userName) {
 					type: 'vbox',
 					align: 'stretch'
 				},
+				tools: [{
+					xtype: 'button',
+					text: 'Config',
+					handler: function() {
+						Ext.create('Ext.window.Window', {
+							title: 'Game Config',
+							modal: false,
+							height: 400,
+							width: 500,
+							layout: {
+								type: 'vbox',
+								align: 'stretch'
+							},
+							items: [
+							{
+								xtype: 'grid',
+								title: 'Roles',
+								flex: 1,
+								columns: [
+								    { text: 'Name', dataIndex: 'name', flex: 1 }
+								],
+								store: {
+									fields: [ 'name' ],
+									data: clientGameConfig.roles
+								}
+							},
+							{
+								xtype: 'grid',
+								title: 'Rules',
+								flex: 1,
+								columns: [
+								    { text: 'Name', dataIndex: 'ruleName', flex: 1 }
+								],
+								store: {
+									fields: [ 'ruleName' ],
+									data: clientGameConfig.handlers
+								}
+							},
+							{
+								xtype: 'grid',
+								title: 'Missions',
+								flex: 1,
+								columns: [
+								    { text: '#', dataIndex: 'index', flex: 1 },
+								    { text: '# Players', dataIndex: 'numParticipants', flex: 1 },
+								    { text: '# Failures', dataIndex: 'requiredFails', flex: 1 }
+								],
+								store: {
+									fields: [ 'index', 'numParticipants', 'requiredFails' ],
+									data: clientGameConfig.missions
+								}
+							}
+							]
+						}).show();
+					}
+				}],
 				defaults: { margin: '8' },
 				items: [{
 					xtype: 'panel',
@@ -343,6 +399,57 @@ function loadDisplay(gameId, userName) {
 		});
 	});
 	gameStateUpdater.task.delay(1);
+	
+	var loadPlayersTask = {};
+	loadPlayersTask.task = new Ext.util.DelayedTask(function() {
+		Ext.Ajax.request({
+			url: '/server/gamePlayers',
+			params: {
+				gameId: gameId,
+				player: userName
+			},
+			success: function(response) {
+				var wrapper = Ext.JSON.decode(response.responseText);
+				if (!isSuccessful("Player Info Load", wrapper)) {
+					return;
+				}
+				var playersStore = Ext.StoreManager.lookup('playersStore');
+				if (playersStore.getCount() == 0) {
+					var playersInfo = wrapper.data;
+					var players = [];
+					for (var i = 0; i < playersInfo.order.length; i++) {
+						var name = playersInfo.order[i];
+						Ext.Array.push(players, { 
+							position: (i + 1), 
+							name: name, 
+							role: playersInfo.roles[name] 
+						});
+					}
+					playersStore.loadData(players);
+				}
+				
+				loadPlayersTask.task.delay(1000);
+			},
+			failure: function(response) {
+				Ext.Msg.alert("Player Info Load Error", response.responseText);
+			}
+		});
+	});
+	loadPlayersTask.task.delay(1000);
+	
+	Ext.Ajax.request({
+		url: '/server/config',
+		params: { gameId: gameId },
+		success: function(response) {
+			var wrapper = Ext.JSON.decode(response.responseText);
+			if (!isSuccessful("Game Configuration Load", wrapper)) {
+				return;
+			}
+			clientGameConfig = wrapper.data;
+			setMissionButtonText();
+		}
+	});
+}
 	
 	var loadPlayersTask = {};
 	loadPlayersTask.task = new Ext.util.DelayedTask(function() {

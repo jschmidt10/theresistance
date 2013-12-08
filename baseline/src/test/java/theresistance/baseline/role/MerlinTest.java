@@ -3,13 +3,6 @@ package theresistance.baseline.role;
 import org.junit.Assert;
 import org.junit.Test;
 
-import theresistance.baseline.role.LoyalServant;
-import theresistance.baseline.role.Merlin;
-import theresistance.baseline.role.Minion;
-import theresistance.baseline.role.Mordred;
-import theresistance.baseline.role.Morgana;
-import theresistance.baseline.role.Percival;
-
 public class MerlinTest
 {
 	@Test
@@ -20,9 +13,9 @@ public class MerlinTest
 		Morgana morgana = new Morgana();
 		Minion minion = new Minion();
 
-		Assert.assertEquals("EVIL", merlin.identify(minion));
-		Assert.assertEquals("EVIL", merlin.identify(morgana));
-		Assert.assertEquals("UNKNOWN", merlin.identify(mordred));
+		Assert.assertEquals("Evil", merlin.identify(minion));
+		Assert.assertEquals("Evil", merlin.identify(morgana));
+		Assert.assertEquals("Unknown", merlin.identify(mordred));
 	}
 
 	@Test
@@ -32,7 +25,7 @@ public class MerlinTest
 		LoyalServant servant = new LoyalServant();
 		Percival percival = new Percival();
 
-		Assert.assertEquals("UNKNOWN", merlin.identify(servant));
-		Assert.assertEquals("UNKNOWN", merlin.identify(percival));
+		Assert.assertEquals("Unknown", merlin.identify(servant));
+		Assert.assertEquals("Unknown", merlin.identify(percival));
 	}
 }

@@ -3,10 +3,6 @@ package theresistance.baseline.role;
 import org.junit.Assert;
 import org.junit.Test;
 
-import theresistance.baseline.role.LoyalServant;
-import theresistance.baseline.role.Merlin;
-import theresistance.baseline.role.Minion;
-
 public class LoyalServantTest
 {
 	@Test
@@ -17,8 +13,8 @@ public class LoyalServantTest
 		Minion minion = new Minion();
 		Merlin merlin = new Merlin();
 
-		Assert.assertEquals("UNKNOWN", servant.identify(anotherServant));
-		Assert.assertEquals("UNKNOWN", servant.identify(merlin));
-		Assert.assertEquals("UNKNOWN", servant.identify(minion));
+		Assert.assertEquals("Unknown", servant.identify(anotherServant));
+		Assert.assertEquals("Unknown", servant.identify(merlin));
+		Assert.assertEquals("Unknown", servant.identify(minion));
 	}
 }

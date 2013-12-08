@@ -8,6 +8,11 @@ import theresistance.core.Role;
  */
 public class BadGuy implements Role
 {
+	@Override
+	public String getName()
+	{
+		return "Bad Guy";
+	}
 
 	@Override
 	public String identify(Role other)

@@ -9,11 +9,11 @@ public class Percival extends GoodRole
 	{
 		if (other instanceof Merlin || other instanceof Morgana)
 		{
-			return "MERLIN_OR_MORGANA";
+			return "Merlin or Morgana";
 		}
 		else
 		{
-			return "UNKNOWN";
+			return "Unknown";
 		}
 	}
 }
