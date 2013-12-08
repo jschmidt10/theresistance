@@ -5,7 +5,9 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
+import java.util.Set;
 import java.util.TreeMap;
+import java.util.TreeSet;
 
 import theresistance.core.Game;
 import theresistance.core.Mission.Result;
@@ -33,6 +35,16 @@ public class MissionState extends GameState<MissionResultAction>
 	public boolean isFinished()
 	{
 		return !results.values().contains(null);
+	}
+	
+	public Set<String> getParticipants() 
+	{
+		Set<String> participants = new TreeSet<String>();
+		for (Player player : results.keySet()) 
+		{
+			participants.add(player.getName());
+		}
+		return participants;
 	}
 
 	@Override

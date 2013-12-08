@@ -31,7 +31,12 @@ public class ProposeState extends GameState<ProposeAction>
 	{
 		return participants != null;
 	}
-
+	
+	public String getLeader()
+	{
+		return leader.getName();
+	}
+	
 	@Override
 	public void advance(Game game)
 	{
