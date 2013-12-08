@@ -48,6 +48,11 @@ function loadDisplay(gameId, userName) {
 		});
 	}
 	
+	function setStatusMessage(message) {
+		var statusLabel = Ext.ComponentQuery.query('#gameStatusLabel')[0];
+		statusLabel.setText(message);
+	}
+	
 	function showProposeMissionDialog(numberOfParticipants) {
 		// TODO: add this
 	}
@@ -155,6 +160,7 @@ function loadDisplay(gameId, userName) {
 					items: [{	
 				        xtype: 'label',
 						text: 'Game status here...',
+						itemId: 'gameStatusLabel',
 						margin: '5 0 5 0',
 						width: '100%',
 						style: 'text-align: center'
@@ -260,8 +266,8 @@ function loadDisplay(gameId, userName) {
 		}]
 	});
 	
-	var proposalsGrid = Ext.ComponentQuery.query('proposalGrid')[0]; 
-	proposalsGrid.getSelectionModel.on('selectionchanged', function(source, selected) {
+	var proposalsGrid = Ext.ComponentQuery.query('#proposalGrid')[0]; 
+	proposalsGrid.getSelectionModel().on('selectionchanged', function(source, selected) {
 		var voteStore = Ext.StoreManager.lookup('votingHistory');
 		var voteHistory = [];
 		if (selected.length == 0) {
@@ -275,6 +281,21 @@ function loadDisplay(gameId, userName) {
 		}
 		voteStore.loadData(voteHistory);
 	});
+	
+	function getArrayString(players) {
+		var leftToVote = '';
+		Ext.Array.each(players, function(player) {
+			if (leftToVote == '') {
+				leftToVote = player;
+			} else {
+				leftToVote += ", " + player;
+			}
+		});
+		if (leftToVote == '') {
+			leftToVote = "(Nobody)";
+		}
+		return leftToVote;
+	}
 	
 	var gameStateUpdater = {};
 	gameStateUpdater.task = new Ext.util.DelayedTask(function() {
@@ -295,24 +316,33 @@ function loadDisplay(gameId, userName) {
 					} else {
 						setButtonVisibility(false, false);
 					}
+					setStatusMessage('Waiting for mission proposal from ' + state.leader);
 				} else if (state.name == 'VoteState') {
 					setButtonVisibility(true, true);
 					setButtonText('Accept Mission', 'Reject Mission');
 					setApprovalHandlers();
-				} else if (state.name == 'MissionResultState') {
-					// TODO: check if this player is on the mission.
-					setButtonVisibility(true, true);
-					setButtonText('Pass Mission', 'Fail Mission');
-					setMissionResultHandlers();
+					var proposal = getArrayString(state.proposal);
+					var leftToVote = getArrayString(state.playersLeftToVote);
+					setStatusMessage('Waiting for votes on mission: ' + proposal + '. from: ' + leftToVote);
+				} else if (state.name == 'MissionState') {
+					if (Ext.Array.contains(state.participants, userName)) {
+						setButtonVisibility(true, true);
+						setButtonText('Pass Mission', 'Fail Mission');
+						setMissionResultHandlers();
+					} else {
+						setButtonVisibility(false, false);
+					}
+					var leftToVote = getArrayString(state.playersLeftToVote);
+					setStatusMessage('Waiting for mission result votes from: ' + leftToVote);
 				} else {
 					setButtonVisibility(false, false);
-					setButtonText('Action One', 'Action Two');
+					setStatusMessage('Game over');
 				}
-				gameStateUpdater.delay(1000);
+				gameStateUpdater.task.delay(1000);
 			}
 		});
 	});
-	gameStateUpdater.delay(1);
+	gameStateUpdater.task.delay(1);
 	
 	var loadPlayersTask = {};
 	loadPlayersTask.task = new Ext.util.DelayedTask(function() {
