@@ -13,11 +13,13 @@ import theresistance.core.Round;
 public class ProposeState extends GameState<ProposeAction>
 {
 	private final Player leader;
+	private int numberOfParticipants;
 	private List<Player> participants;
 
-	public ProposeState(Player leader)
+	public ProposeState(Player leader, int numberOfParticipants)
 	{
 		this.leader = leader;
+		this.numberOfParticipants = numberOfParticipants;
 	}
 
 	@Override
@@ -39,7 +41,7 @@ public class ProposeState extends GameState<ProposeAction>
 	
 	public int getNumberOfParticipants()
 	{
-		return participants.size();
+		return numberOfParticipants;
 	}
 	
 	@Override

@@ -100,7 +100,7 @@ public class Game
 
 		// TODO: the fact that game needs to know about a specific state seems
 		// wrong but not sure how to fix right now
-		gameState = new ProposeState(getCurrentLeader());
+		gameState = new ProposeState(getCurrentLeader(), getCurrentRound().getMission().getNumParticipants());
 		isStarted = true;
 	}
 

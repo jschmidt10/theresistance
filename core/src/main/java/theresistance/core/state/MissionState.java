@@ -71,6 +71,6 @@ public class MissionState extends GameState<MissionResultAction>
 		game.getCurrentRound().setResults(shuffledResults);
 		game.completeRound();
 
-		game.setState(new ProposeState(game.getCurrentLeader()));
+		game.setState(new ProposeState(game.getCurrentLeader(), game.getCurrentRound().getMission().getNumParticipants()));
 	}
 }
