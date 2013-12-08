@@ -48,7 +48,16 @@ public class VoteState extends GameState<VoteAction>
 	public Set<String> getPlayersLeftToVote()
 	{
 		return leftToVote;
-		
+	}
+	
+	public Set<String> getProposal()
+	{
+		Set<String> players = new TreeSet<>();
+		for (Player player : proposal.getParticipants())
+		{
+			players.add(player.getName());
+		}
+		return players;
 	}
 
 	@Override
