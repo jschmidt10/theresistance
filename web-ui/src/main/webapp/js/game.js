@@ -105,26 +105,9 @@ function loadDisplay(gameId, userName) {
 				type: 'hbox',
 				align: 'stretch'
 			},
-			items: [{
-				xtype: 'panel',
-				title: 'Player List',
-				flex: 1,
-				layout: {
-					type: 'vbox',
-					align: 'stretch'
-				},
-				items: [{
-					itemId: 'playersGrid',
-					xtype: 'grid',
-					columns: [{ text: 'Pos.', dataIndex: 'position', flex: 1}, 
-					          { text: 'Name', dataIndex: 'name', flex: 3 }, 
-					          { text: 'Role', dataIndex: 'role', flex: 2 }],
-					store: {
-						storeId: 'playersStore',
-						fields: ['position', 'name', 'role']
-					}
-				}]
-			}, {
+			items: [
+			Ext.create('js.game.PlayerListPanel', { flex: 1 }), 
+			{
 				xtype: 'panel',
 				title: 'Game',
 				flex: 4,
@@ -220,48 +203,7 @@ function loadDisplay(gameId, userName) {
 						          { text: 'Proposal', dataIndex: 'proposal', flex: 3 }, 
 						          { text: 'Accepts', dataIndex: 'accepts', width: '30' },
 						          { text: 'Declines', dataIndex: 'declines', width: '30' }],
-						store: {
-							storeId: 'proposalHistory',
-							fields: ['index', 'leader', 'proposal', 'accepts', 'declines', 'votes'],
-							loadProposals: function(mission) {
-								var me = this;
-								Ext.Ajax.request({
-									url: '/server/proposals',
-									params: {
-										gameId: gameId,
-										round: mission
-									},
-									success: function(response) {
-										var wrapper = Ext.JSON.decode(response.responseText);
-										if (!isSuccessful("Proposal Load", wrapper)) {
-											return;
-										}
-										var proposals = wrapper.data;
-										var proposalsToLoad = [];
-										var index = 1;
-										Ext.Array.each(proposals, function(proposal) {
-											var accepts = 0;
-											var declines = 0;
-											for (var player in proposal.votes) {
-												if (proposal.votes[player] == 'SEND') {
-													accepts++;
-												} else {
-													declines++;
-												}
-											}
-											Ext.Array.push(proposalsToLoad, {
-												index: index,
-												leader: proposal.leader,
-												accepts: accepts,
-												declines: declines,
-												votes: proposal.votes
-											});
-										});
-										me.loadData(proposalsToLoad);
-									}
-								});
-							}
-						}
+						store: Ext.create('js.game.store.ProposalStore')
 					}, {
 						xtype: 'grid',
 						title: 'Voting History',
