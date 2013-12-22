@@ -22,8 +22,7 @@ Ext.define('js.game.HistoryPanel', {
 		
 		var proposalsGrid = me.down('#proposalGrid'); 
 		thisisabigvariable = proposalsGrid;
-		proposalsGrid.getSelectionModel().on('selectionchanged', function(source, selected) {
-			console.log("selection changed");
+		proposalsGrid.getSelectionModel().on('selectionchange', function(source, selected) {
 			var voteStore = Ext.StoreManager.lookup('votingHistory');
 			var voteHistory = [];
 			if (selected.length == 0) {
