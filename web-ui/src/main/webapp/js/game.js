@@ -60,7 +60,7 @@ function loadDisplay(gameId, userName) {
 		}).show();
 	}
 	
-	function submitApproval(approval, thisButotn, otherButton) {
+	function submitApproval(approval, thisButton, otherButton) {
 		Ext.Ajax.request({
 			url: '/server/vote',
 			params: {
@@ -71,7 +71,7 @@ function loadDisplay(gameId, userName) {
 			success: function(response) {
 				var wrapper = Ext.JSON.decode(response.responseText);
 				isSuccessful("Submit Proposal Approval", wrapper);
-				setButtonState(thisButotn, otherButton);
+				setButtonState(thisButton, otherButton);
 			}
 		});
 	}
@@ -87,7 +87,7 @@ function loadDisplay(gameId, userName) {
 			success: function(response) {
 				var wrapper = Ext.JSON.decode(response.responseText);
 				isSuccessful("Submit Mission Result", wrapper);
-				setButtonState(thisButotn, otherButton);
+				setButtonState(thisButton, otherButton);
 			}
 		});
 	}
@@ -106,7 +106,7 @@ function loadDisplay(gameId, userName) {
 				align: 'stretch'
 			},
 			items: [
-			Ext.create('js.game.PlayerListPanel', { flex: 1 }), 
+			Ext.create('js.game.PlayerListPanel', { gameId: gameId, userName: userName }), 
 			{
 				xtype: 'panel',
 				title: 'Game',
@@ -183,57 +183,10 @@ function loadDisplay(gameId, userName) {
 					        { mission: 2, text: 'Mission 3' }, 
 					        { mission: 3, text: 'Mission 4' }, 
 					        { mission: 4, text: 'Mission 5' }]
-				}, {
-					xtype: 'panel',
-					margin: '0',
-					border: 0,
-					flex: 2,
-					defaults: { margin: '8' },
-					layout: {
-						type: 'hbox',
-						align: 'stretch'
-					},
-					items: [{
-						xtype: 'grid',
-						title: 'Proposal History',
-						itemId: 'proposalGrid',
-						flex: 1,
-						columns: [{ text: 'Index', dataIndex: 'index', width: '30' },
-						          { text: 'Leader', dataIndex: 'leader', flex: 1 }, 
-						          { text: 'Proposal', dataIndex: 'proposal', flex: 3 }, 
-						          { text: 'Accepts', dataIndex: 'accepts', width: '30' },
-						          { text: 'Declines', dataIndex: 'declines', width: '30' }],
-						store: Ext.create('js.game.store.ProposalStore')
-					}, {
-						xtype: 'grid',
-						title: 'Voting History',
-						flex: 1,
-						columns: [{ text: 'Name', dataIndex: 'name', flex: 2 },
-						          { text: 'Vote', dataIndex: 'vote', flex: 1 }],
-						store: {
-							storeId: 'votingHistory',
-							fields: ['name', 'vote']
-						}
-					}]
-				}]
+				}, 
+				Ext.create('js.game.HistoryPanel', { gameId: gameId })]
 			}]
 		}]
-	});
-	
-	var proposalsGrid = Ext.ComponentQuery.query('#proposalGrid')[0]; 
-	proposalsGrid.getSelectionModel().on('selectionchanged', function(source, selected) {
-		var voteStore = Ext.StoreManager.lookup('votingHistory');
-		var voteHistory = [];
-		if (selected.length == 0) {
-			voteStore.removeAll();
-			return;
-		}
-		var votes = selected[0].data.votes;
-		for (var player in votes) {
-			var voteText = (votes[player] == 'SEND' ? 'Accept' : 'Reject');
-			Ext.Array.push(voteHistory, { name: player, vote: voteText });
-		}
-		voteStore.loadData(voteHistory);
 	});
 	
 	function getArrayString(players) {
@@ -297,43 +250,6 @@ function loadDisplay(gameId, userName) {
 		});
 	});
 	gameStateUpdater.task.delay(1);
-	
-	var loadPlayersTask = {};
-	loadPlayersTask.task = new Ext.util.DelayedTask(function() {
-		Ext.Ajax.request({
-			url: '/server/gamePlayers',
-			params: {
-				gameId: gameId,
-				player: userName
-			},
-			success: function(response) {
-				var wrapper = Ext.JSON.decode(response.responseText);
-				if (!isSuccessful("Player Info Load", wrapper)) {
-					return;
-				}
-				var playersStore = Ext.StoreManager.lookup('playersStore');
-				if (playersStore.getCount() == 0) {
-					var playersInfo = wrapper.data;
-					var players = [];
-					for (var i = 0; i < playersInfo.order.length; i++) {
-						var name = playersInfo.order[i];
-						Ext.Array.push(players, { 
-							position: (i + 1), 
-							name: name, 
-							role: playersInfo.roles[name] 
-						});
-					}
-					playersStore.loadData(players);
-				}
-				
-				loadPlayersTask.task.delay(1000);
-			},
-			failure: function(response) {
-				Ext.Msg.alert("Player Info Load Error", response.responseText);
-			}
-		});
-	});
-	loadPlayersTask.task.delay(1000);
 	
 	Ext.Ajax.request({
 		url: '/server/config',
