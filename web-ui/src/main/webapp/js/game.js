@@ -4,12 +4,6 @@ Ext.onReady(function() {
 
 	function loadDisplay(gameId, userName) {
 		
-		Ext.create('js.game.GameUI', {
-			gameId: gameId,
-			userName: userName,
-			gameConfig: clientGameConfig
-		});
-		
 		Ext.Ajax.request({
 			url: '/server/config',
 			params: { gameId: gameId },
@@ -21,6 +15,12 @@ Ext.onReady(function() {
 				clientGameConfig = wrapper.data;
 				setMissionButtonText();
 			}
+		});
+		
+		Ext.create('js.game.GameUI', {
+			gameId: gameId,
+			userName: userName,
+			gameConfig: clientGameConfig
 		});
 	}
 

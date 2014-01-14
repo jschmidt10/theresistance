@@ -38,8 +38,10 @@ Ext.define('js.game.store.ProposalStore', {
 						leader: proposal.leader,
 						accepts: accepts,
 						declines: declines,
-						votes: proposal.votes
+						votes: proposal.votes,
+						proposal: proposal.participants
 					});
+					index++;
 				});
 				me.loadData(proposalsToLoad);
 			}
