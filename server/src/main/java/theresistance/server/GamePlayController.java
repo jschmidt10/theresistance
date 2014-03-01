@@ -1,5 +1,6 @@
 package theresistance.server;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -23,6 +24,7 @@ import theresistance.core.state.VoteAction;
 import theresistance.core.state.VoteState;
 import theresistance.server.view.GamePlayerView;
 import theresistance.server.view.ProposalView;
+import theresistance.server.view.ResultsView;
 
 /**
  * Controller for game play end points
@@ -110,14 +112,23 @@ public class GamePlayController
 		return views;
 	}
 
-	@RequestMapping(value = "results", produces = "application/json")
+	@RequestMapping(value = "rounds", produces = "application/json")
 	@ResponseBody
-	public StatusResponse getResults(@RequestParam String gameId, @RequestParam("round") int index)
+	public StatusResponse getRounds(@RequestParam String gameId)
 	{
 		Game game = registry.getGame(gameId);
-		Round round = game.getRound(index);
+		List<ResultsView> results = new ArrayList<ResultsView>(5);
 
-		return StatusResponse.success(gameId, round.getResults());
+		for (Round round : game.getRounds())
+		{
+			if (round.isFinished())
+			{
+				results.add(new ResultsView(round.getIndex(), round.getNumFails(), round.getResult()
+						.toString()));
+			}
+		}
+
+		return StatusResponse.success(gameId, results);
 	}
 
 	@RequestMapping(value = "propose", produces = "application/json")
