@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
+import theresistance.core.Mission.Result;
+
 /**
  * A round is a mission along with all of the proposals for that mission
  */
@@ -27,17 +29,17 @@ public class Round
 	{
 		return index;
 	}
-	
+
 	public List<Proposal> getProposals()
 	{
 		return proposals;
 	}
-	
+
 	public int getProposalIndex()
 	{
 		return proposals.size();
 	}
-	
+
 	public Proposal getLastProposal()
 	{
 		if (proposals.isEmpty())
@@ -85,7 +87,12 @@ public class Round
 		return !results.isEmpty();
 	}
 
-	public boolean isSuccess()
+	public Result getResult()
+	{
+		return isSuccess() ? Result.PASS : Result.FAIL;
+	}
+
+	public int getNumFails()
 	{
 		int failCnt = 0;
 
@@ -97,6 +104,11 @@ public class Round
 			}
 		}
 
-		return failCnt < mission.getRequiredFails();
+		return failCnt;
+	}
+
+	public boolean isSuccess()
+	{
+		return getNumFails() < mission.getRequiredFails();
 	}
 }

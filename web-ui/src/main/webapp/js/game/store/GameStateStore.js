@@ -122,6 +122,28 @@ Ext.define('js.game.store.GameStateStore', {
 			});
 		}
 		
+		function updateRoundResults() {
+			Ext.Ajax.request({
+				url: '/server/rounds',
+				params: { gameId: me.gameId },
+				success: function(response) {
+					var wrapper = Ext.JSON.decode(response.responseText);
+					console.log(JSON.stringify(wrapper));
+					
+					var missionButtons = Ext.ComponentQuery.query('#missions')[0].query('button');
+					var results = wrapper.data;
+					
+					for (var i = 0; i < results.length; i++) {
+						var index = results[i].index;
+						var text = missionButtons[index].getText();
+						if (!text.contains('Result')) {
+							missionButtons[index].setText(text + '<br/>Result: ' + results[i].result + '<br/>Fails: ' + results[i].numFails);
+						}
+					}
+				}
+			});
+		}
+		
 		me.updateGameTask = new Ext.util.DelayedTask(function() {
 			Ext.Ajax.request({
 				url: '/server/gameState',
@@ -132,6 +154,7 @@ Ext.define('js.game.store.GameStateStore', {
 						return;
 					}
 					var state = wrapper.data;
+					updateRoundResults();
 					if (state.name == 'ProposeState') {
 						if (state.leader == me.userName) {
 							setButtonText('Propose Mission', 'Action Two');
