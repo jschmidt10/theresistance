@@ -43,5 +43,9 @@ public class AssassinationState extends GameState<AssassinationAction>
 		game.setWinners(winner);
 		game.setState(new GameOverState(winner));
 	}
-
+	
+	public String getAssassin()
+	{
+		return assassin.getName();
+	}
 }
