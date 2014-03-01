@@ -9,6 +9,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import theresistance.baseline.state.AssassinationAction;
+import theresistance.baseline.state.AssassinationState;
 import theresistance.baseline.state.MissionResultAction;
 import theresistance.baseline.state.MissionState;
 import theresistance.baseline.state.ProposeAction;
@@ -155,6 +157,16 @@ public class GamePlayController
 		return StatusResponse.success(gameId, null);
 	}
 
+	@RequestMapping(value = "assassinate", produces = "application/json")
+	@ResponseBody
+	public StatusResponse assassinate(@RequestParam String gameId, @RequestParam String assassinated)
+	{
+		Game game = registry.getGame(gameId);
+		AssassinationState state = game.getState(AssassinationState.class);
+		state.progress(game, new AssassinationAction(game.getPlayer(assassinated)));
+		return StatusResponse.success(gameId, null);
+	}	
+	
 	private List<Player> toPlayers(Game game, List<String> players)
 	{
 		List<Player> results = new LinkedList<>();
