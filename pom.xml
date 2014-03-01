@@ -11,6 +11,7 @@
 		<module>core</module>
 		<module>baseline</module>
 		<module>server</module>
+                <module>web-ui</module>
 	</modules>
 
 	<properties>

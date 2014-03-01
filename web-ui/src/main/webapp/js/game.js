@@ -3,7 +3,7 @@ Ext.onReady(function() {
 	var clientGameConfig = {};
 
 	function loadDisplay(gameId, userName) {
-		
+	
 		Ext.Ajax.request({
 			url: '/server/config',
 			params: { gameId: gameId },
@@ -13,14 +13,16 @@ Ext.onReady(function() {
 					return;
 				}
 				clientGameConfig = wrapper.data;
+
+				Ext.create('js.game.GameUI', {
+					gameId: gameId,
+					userName: userName,
+					gameConfig: clientGameConfig
+				});
+				
+				
 				setMissionButtonText();
 			}
-		});
-		
-		Ext.create('js.game.GameUI', {
-			gameId: gameId,
-			userName: userName,
-			gameConfig: clientGameConfig
 		});
 	}
 
