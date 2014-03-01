@@ -1,4 +1,4 @@
-package theresistance.core.state;
+package theresistance.baseline.state;
 
 import java.util.Collection;
 import java.util.Map;
@@ -10,6 +10,7 @@ import theresistance.core.Game;
 import theresistance.core.Player;
 import theresistance.core.Proposal;
 import theresistance.core.Proposal.Vote;
+import theresistance.core.state.GameState;
 import theresistance.core.Round;
 
 /**

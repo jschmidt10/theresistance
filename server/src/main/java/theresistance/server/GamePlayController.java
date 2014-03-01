@@ -9,18 +9,18 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import theresistance.baseline.state.MissionResultAction;
+import theresistance.baseline.state.MissionState;
+import theresistance.baseline.state.ProposeAction;
+import theresistance.baseline.state.ProposeState;
+import theresistance.baseline.state.VoteAction;
+import theresistance.baseline.state.VoteState;
 import theresistance.core.Game;
 import theresistance.core.Mission.Result;
 import theresistance.core.Player;
 import theresistance.core.Proposal;
 import theresistance.core.Proposal.Vote;
 import theresistance.core.Round;
-import theresistance.core.state.MissionResultAction;
-import theresistance.core.state.MissionState;
-import theresistance.core.state.ProposeAction;
-import theresistance.core.state.ProposeState;
-import theresistance.core.state.VoteAction;
-import theresistance.core.state.VoteState;
 import theresistance.server.view.GamePlayerView;
 import theresistance.server.view.ProposalView;
 
