@@ -1,4 +1,4 @@
-package theresistance.baseline.state;
+package theresistance.core.state;
 
 import java.util.List;
 
@@ -6,7 +6,6 @@ import theresistance.core.Game;
 import theresistance.core.Player;
 import theresistance.core.Proposal;
 import theresistance.core.Round;
-import theresistance.core.state.GameState;
 
 /**
  * The proposal portion of a game

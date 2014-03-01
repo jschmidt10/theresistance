@@ -1,7 +1,6 @@
-package theresistance.baseline.state;
+package theresistance.core.state;
 
 import theresistance.core.Mission.Result;
-import theresistance.core.state.GameAction;
 import theresistance.core.Player;
 
 /**

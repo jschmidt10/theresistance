@@ -1,8 +1,7 @@
-package theresistance.baseline.state;
+package theresistance.core.state;
 
 import theresistance.core.Player;
 import theresistance.core.Proposal.Vote;
-import theresistance.core.state.GameAction;
 
 /**
  * A proposal vote

@@ -3,8 +3,8 @@ package theresistance.core;
 import java.util.LinkedList;
 import java.util.List;
 
-import theresistance.baseline.state.ProposeState;
 import theresistance.core.state.GameState;
+import theresistance.core.state.ProposeState;
 import theresistance.core.util.ExtraInfoBag;
 
 /**
