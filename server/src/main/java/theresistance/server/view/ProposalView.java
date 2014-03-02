@@ -27,9 +27,9 @@ public class ProposalView
 			participants.add(player.getName());
 		}
 
-		for (Map.Entry<Player, Vote> entry : proposal.getVotes().entrySet())
+		for (Map.Entry<String, Vote> entry : proposal.getVotes().entrySet())
 		{
-			votes.put(entry.getKey().getName(), entry.getValue().toString());
+			votes.put(entry.getKey(), entry.getValue().toString());
 		}
 	}
 

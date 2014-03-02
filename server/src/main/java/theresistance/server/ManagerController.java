@@ -32,11 +32,13 @@ public class ManagerController
 	private final DynamicGameOptions<PostRoundEventHandler> ruleOpts = new DynamicGameOptions<>(
 			PostRoundEventHandler.class, new RuleFormatter());
 
+	private final GameFactory factory;
 	private final GameRegistry registry;
 
 	@Autowired
-	public ManagerController(GameRegistry registry)
+	public ManagerController(GameRegistry registry, GameFactory factory)
 	{
+		this.factory = factory;
 		this.registry = registry;
 	}
 
@@ -67,7 +69,7 @@ public class ManagerController
 		config.setMissions(toMissions(numPlayers, numFailures));
 		config.setHandlers(ruleOpts.getOptions(rules));
 
-		String id = registry.register(new Game(config));
+		String id = registry.register(factory.createNewGame(config));
 
 		return StatusResponse.success(id, null);
 	}

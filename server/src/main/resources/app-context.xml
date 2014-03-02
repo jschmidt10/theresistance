@@ -12,4 +12,9 @@
 
 	<bean id="gameRegistry" class="theresistance.server.GameRegistry" />
 
+	<!-- TODO: this shouldn't happen -->
+	<bean class="java.lang.Class" factory-method="forName">
+		<constructor-arg value="theresistance.baseline.DefaultGame" />
+	</bean>
+
 </beans>

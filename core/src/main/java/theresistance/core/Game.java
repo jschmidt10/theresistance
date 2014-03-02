@@ -4,13 +4,12 @@ import java.util.LinkedList;
 import java.util.List;
 
 import theresistance.core.state.GameState;
-import theresistance.core.state.ProposeState;
 import theresistance.core.util.ExtraInfoBag;
 
 /**
  * A game of The Resistance.
  */
-public class Game
+public abstract class Game
 {
 	private String id;
 	private final GameConfig config;
@@ -100,9 +99,11 @@ public class Game
 
 		// TODO: the fact that game needs to know about a specific state seems
 		// wrong but not sure how to fix right now
-		gameState = new ProposeState(getCurrentLeader(), getCurrentRound().getMission().getNumParticipants());
+		gameState = getInitialState();
 		isStarted = true;
 	}
+
+	public abstract GameState getInitialState();
 
 	/**
 	 * @return true if the game has already started, false, otherwise

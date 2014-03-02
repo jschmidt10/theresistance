@@ -19,7 +19,7 @@ public class Proposal
 	private final Player leader;
 
 	private List<Player> participants;
-	private Map<Player, Vote> votes = new TreeMap<>();
+	private Map<String, Vote> votes = new TreeMap<>();
 
 	public Proposal(Player leader, int totalPlayers)
 	{
@@ -70,10 +70,10 @@ public class Proposal
 	 */
 	public void setVote(Player player, Vote vote)
 	{
-		votes.put(player, vote);
+		votes.put(player.getName(), vote);
 	}
 
-	public void setVotes(Map<Player, Vote> votes)
+	public void setVotes(Map<String, Vote> votes)
 	{
 		this.votes.putAll(votes);
 	}
@@ -81,7 +81,7 @@ public class Proposal
 	/**
 	 * @return votes
 	 */
-	public Map<Player, Vote> getVotes()
+	public Map<String, Vote> getVotes()
 	{
 		return Collections.unmodifiableMap(votes);
 	}

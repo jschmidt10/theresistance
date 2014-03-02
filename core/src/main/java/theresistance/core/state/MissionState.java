@@ -17,20 +17,20 @@ import theresistance.core.Round;
 
 public class MissionState extends GameState<MissionResultAction>
 {
-	Map<Player, Result> results = new TreeMap<>();
+	Map<String, Result> results = new TreeMap<>();
 	Set<String> leftToVote = new TreeSet<>();
 
 	public MissionState(Collection<Player> participants)
 	{
 		for (Player player : participants)
 		{
-			results.put(player, null);
+			results.put(player.getName(), null);
 			leftToVote.add(player.getName());
 		}
 	}
 
 	@Override
-	public Class<MissionResultAction> getGameActionClass() 
+	public Class<MissionResultAction> getGameActionClass()
 	{
 		return MissionResultAction.class;
 	}
@@ -39,7 +39,7 @@ public class MissionState extends GameState<MissionResultAction>
 	public void act(MissionResultAction action)
 	{
 		results.put(action.getPlayer(), action.getResult());
-		leftToVote.remove(action.getPlayer().getName());
+		leftToVote.remove(action.getPlayer());
 	}
 
 	@Override
@@ -51,9 +51,9 @@ public class MissionState extends GameState<MissionResultAction>
 	public Set<String> getParticipants()
 	{
 		Set<String> participants = new TreeSet<String>();
-		for (Player player : results.keySet())
+		for (String player : results.keySet())
 		{
-			participants.add(player.getName());
+			participants.add(player);
 		}
 		return participants;
 	}

@@ -18,7 +18,7 @@ import theresistance.core.Round;
 public class VoteState extends GameState<VoteAction>
 {
 	private Proposal proposal;
-	private Map<Player, Vote> votes = new TreeMap<>();
+	private Map<String, Vote> votes = new TreeMap<>();
 	private Set<String> leftToVote = new TreeSet<>();
 
 	public VoteState(Collection<Player> players, Proposal proposal)
@@ -27,13 +27,13 @@ public class VoteState extends GameState<VoteAction>
 
 		for (Player player : players)
 		{
-			votes.put(player, null);
+			votes.put(player.getName(), null);
 			leftToVote.add(player.getName());
 		}
 	}
-	
+
 	@Override
-	public Class<VoteAction> getGameActionClass() 
+	public Class<VoteAction> getGameActionClass()
 	{
 		return VoteAction.class;
 	}
@@ -42,7 +42,7 @@ public class VoteState extends GameState<VoteAction>
 	public void act(VoteAction action)
 	{
 		votes.put(action.getPlayer(), action.getVote());
-		leftToVote.remove(action.getPlayer().getName());
+		leftToVote.remove(action.getPlayer());
 	}
 
 	@Override
@@ -50,12 +50,12 @@ public class VoteState extends GameState<VoteAction>
 	{
 		return leftToVote.isEmpty();
 	}
-	
+
 	public Set<String> getPlayersLeftToVote()
 	{
 		return leftToVote;
 	}
-	
+
 	public Set<String> getProposal()
 	{
 		Set<String> players = new TreeSet<>();
