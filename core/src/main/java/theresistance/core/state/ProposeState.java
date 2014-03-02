@@ -21,7 +21,13 @@ public class ProposeState extends GameState<ProposeAction>
 		this.leader = leader;
 		this.numberOfParticipants = numberOfParticipants;
 	}
-
+	
+	@Override
+	public Class<ProposeAction> getGameActionClass() 
+	{
+		return ProposeAction.class;
+	}
+	
 	@Override
 	public void act(ProposeAction action)
 	{

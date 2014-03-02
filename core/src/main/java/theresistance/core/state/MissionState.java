@@ -30,6 +30,12 @@ public class MissionState extends GameState<MissionResultAction>
 	}
 
 	@Override
+	public Class<MissionResultAction> getGameActionClass() 
+	{
+		return MissionResultAction.class;
+	}
+
+	@Override
 	public void act(MissionResultAction action)
 	{
 		results.put(action.getPlayer(), action.getResult());

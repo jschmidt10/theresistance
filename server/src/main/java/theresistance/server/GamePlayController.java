@@ -1,9 +1,13 @@
 package theresistance.server;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.codehaus.jackson.JsonParseException;
+import org.codehaus.jackson.map.JsonMappingException;
+import org.codehaus.jackson.map.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -11,17 +15,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import theresistance.core.Game;
-import theresistance.core.Mission.Result;
 import theresistance.core.Player;
 import theresistance.core.Proposal;
-import theresistance.core.Proposal.Vote;
 import theresistance.core.Round;
-import theresistance.core.state.MissionResultAction;
-import theresistance.core.state.MissionState;
-import theresistance.core.state.ProposeAction;
-import theresistance.core.state.ProposeState;
-import theresistance.core.state.VoteAction;
-import theresistance.core.state.VoteState;
+import theresistance.core.state.GameAction;
+import theresistance.core.state.GameState;
 import theresistance.server.view.GamePlayerView;
 import theresistance.server.view.ProposalView;
 import theresistance.server.view.ResultsView;
@@ -131,50 +129,16 @@ public class GamePlayController
 		return StatusResponse.success(gameId, results);
 	}
 
-	@RequestMapping(value = "propose", produces = "application/json")
+	@SuppressWarnings("unchecked")
+	@RequestMapping(value = "action", produces = "application/json")
 	@ResponseBody
-	public StatusResponse propose(@RequestParam String gameId, @RequestParam("players") List<String> players)
+	public <A extends GameAction> StatusResponse onAction(@RequestParam String gameId, @RequestParam String action) throws JsonParseException, JsonMappingException, IOException
 	{
 		Game game = registry.getGame(gameId);
-		ProposeState state = game.getState(ProposeState.class);
-		state.progress(game, new ProposeAction(toPlayers(game, players)));
-
+		GameState<A> state = (GameState<A>) game.getState();
+		ObjectMapper mapper = new ObjectMapper();
+		A gameAction = mapper.readValue(action, state.getGameActionClass());
+		state.progress(game, gameAction);
 		return StatusResponse.success(gameId, null);
-	}
-
-	@RequestMapping(value = "vote", produces = "application/json")
-	@ResponseBody
-	public StatusResponse vote(@RequestParam String gameId, @RequestParam String player,
-			@RequestParam String vote)
-	{
-		Game game = registry.getGame(gameId);
-		VoteState state = game.getState(VoteState.class);
-		state.progress(game, new VoteAction(game.getPlayer(player), Vote.valueOf(vote)));
-
-		return StatusResponse.success(gameId, null);
-	}
-
-	@RequestMapping(value = "mission", produces = "application/json")
-	@ResponseBody
-	public StatusResponse goOnMission(@RequestParam String gameId, @RequestParam String player,
-			@RequestParam String result)
-	{
-		Game game = registry.getGame(gameId);
-		MissionState state = game.getState(MissionState.class);
-		state.progress(game, new MissionResultAction(game.getPlayer(player), Result.valueOf(result)));
-
-		return StatusResponse.success(gameId, null);
-	}
-
-	private List<Player> toPlayers(Game game, List<String> players)
-	{
-		List<Player> results = new LinkedList<>();
-
-		for (String name : players)
-		{
-			results.add(game.getPlayer(name));
-		}
-
-		return results;
 	}
 }

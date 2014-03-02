@@ -85,10 +85,10 @@ Ext.define('js.game.ProposalWindow', {
 		});
 		
 		Ext.Ajax.request({
-			url: '/server/propose',
+			url: '/server/action',
 			params: {
 				gameId: window.gameId,
-				players: selected
+				action: { players: selected }
 			},
 			success: function(response) {
 				var wrapper = Ext.JSON.decode(response.responseText);

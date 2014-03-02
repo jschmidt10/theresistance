@@ -13,6 +13,12 @@ public class GameOverState extends GameState<GameOverAction>
 	}
 	
 	@Override
+	public Class<GameOverAction> getGameActionClass() 
+	{
+		return GameOverAction.class;
+	}
+	
+	@Override
 	public void act(GameOverAction action) { }
 
 	@Override

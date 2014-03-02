@@ -11,11 +11,10 @@ public class ProposeAction implements GameAction
 {
 	private List<Player> players;
 
-	public ProposeAction(List<Player> players)
+	public void setPlayers(List<Player> players)
 	{
 		this.players = players;
 	}
-
 	public List<Player> getPlayers()
 	{
 		return players;

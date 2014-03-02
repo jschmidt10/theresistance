@@ -105,11 +105,13 @@ Ext.define('js.game.store.GameStateStore', {
 		
 		function submitApproval(approval, thisButton, otherButton) {
 			Ext.Ajax.request({
-				url: '/server/vote',
+				url: '/server/action',
 				params: {
 					gameId: me.gameId,
-					player: me.userName,
-					vote: approval
+					action: {
+						player: me.userName,
+						vote: approval 
+					}
 				},
 				success: function(response) {
 					var wrapper = Ext.JSON.decode(response.responseText);
@@ -121,11 +123,13 @@ Ext.define('js.game.store.GameStateStore', {
 		
 		function submitMissionResult(result, thisButton, otherButton) {
 			Ext.Ajax.request({
-				url: '/server/mission',
+				url: '/server/action',
 				params: {
 					gameId: me.gameId,
-					player: me.userName,
-					result: result
+					action: {
+						player: me.userName,
+						result: result
+					}
 				},
 				success: function(response) {
 					var wrapper = Ext.JSON.decode(response.responseText);

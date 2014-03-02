@@ -1,6 +1,5 @@
 package theresistance.core.state;
 
-import theresistance.core.Player;
 import theresistance.core.Proposal.Vote;
 
 /**
@@ -8,18 +7,22 @@ import theresistance.core.Proposal.Vote;
  */
 public class VoteAction implements GameAction
 {
-	private Player player;
+	private String player;
 	private Vote vote;
 
-	public VoteAction(Player player, Vote vote)
-	{
-		this.player = player;
-		this.vote = vote;
-	}
-
-	public Player getPlayer()
+	public String getPlayer()
 	{
 		return player;
+	}
+	
+	public void setPlayer(String player)
+	{
+		this.player = player;
+	}
+	
+	public void setVote(String vote) 
+	{
+		this.vote = Vote.valueOf(vote);
 	}
 
 	public Vote getVote()

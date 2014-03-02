@@ -8,20 +8,22 @@ import theresistance.core.Player;
  */
 public class MissionResultAction implements GameAction
 {
-	private Player player;
+	private String player;
 	private Result result;
 
-	public MissionResultAction(Player player, Result result)
-	{
-		this.player = player;
-		this.result = result;
-	}
-
-	public Player getPlayer()
+	public String getPlayer()
 	{
 		return player;
 	}
+	public void setPlayer(String player)
+	{
+		this.player = player;
+	}
 
+	public void setResult(String result)
+	{
+		this.result = Result.valueOf(result);
+	}
 	public Result getResult()
 	{
 		return result;

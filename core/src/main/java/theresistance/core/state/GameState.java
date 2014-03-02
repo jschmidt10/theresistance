@@ -14,6 +14,8 @@ public abstract class GameState<A extends GameAction>
 	{
 		return this.getClass().getSimpleName();
 	}
+	
+	public abstract Class<A> getGameActionClass();
 
 	/**
 	 * progress the game with a player action

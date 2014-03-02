@@ -31,6 +31,12 @@ public class VoteState extends GameState<VoteAction>
 			leftToVote.add(player.getName());
 		}
 	}
+	
+	@Override
+	public Class<VoteAction> getGameActionClass() 
+	{
+		return VoteAction.class;
+	}
 
 	@Override
 	public void act(VoteAction action)

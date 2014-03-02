@@ -51,10 +51,10 @@ Ext.define('js.game.AssassinationWindow', {
 		var selected = window.down("option[selected=true]");
 		
 		Ext.Ajax.request({
-			url: '/server/assassinate',
+			url: '/server/action',
 			params: {
 				gameId: window.gameId,
-				players: selected.getValue()
+				action: { assassinated: selected.getValue() }
 			},
 			success: function(response) {
 				var wrapper = Ext.JSON.decode(response.responseText);
