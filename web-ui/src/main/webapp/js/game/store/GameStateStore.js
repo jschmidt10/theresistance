@@ -145,7 +145,6 @@ Ext.define('js.game.store.GameStateStore', {
 				params: { gameId: me.gameId },
 				success: function(response) {
 					var wrapper = Ext.JSON.decode(response.responseText);
-					console.log(JSON.stringify(wrapper));
 					
 					var missionButtons = Ext.ComponentQuery.query('#missions')[0].query('button');
 					var results = wrapper.data;
