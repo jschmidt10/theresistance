@@ -27,7 +27,7 @@ public class GamePlayerView
 			order.add(p.getName());
 			if (p.getName().equals(player))
 			{
-				roles.put(p.getName(), myRole.getClass().getName());
+				roles.put(p.getName(), myRole.getName());
 			}
 			else
 			{
