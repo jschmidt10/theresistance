@@ -7,10 +7,16 @@ import theresistance.core.state.GameState;
 public class GameOverState extends GameState<GameOverAction> 
 {
 	private Alignment winner;
+	private String extraMessage = "";
 	
-	public GameOverState(Alignment winner) 
+	public GameOverState(Alignment winner)
+	{
+		this(winner, "");
+	}
+	public GameOverState(Alignment winner, String extraMessage) 
 	{
 		this.winner = winner;
+		this.extraMessage = extraMessage;
 	}
 	
 	@Override
@@ -35,5 +41,9 @@ public class GameOverState extends GameState<GameOverAction>
 	{
 		return winner;
 	}
-
+	
+	public String getExtraMessage()
+	{
+		return extraMessage;
+	}
 }

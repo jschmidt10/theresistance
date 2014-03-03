@@ -93,7 +93,7 @@ Ext.define('js.game.store.GameStateStore', {
 		function showAssassinationDialog() {
 			Ext.create('js.game.AssassinationWindow', {
 				gameId: me.gameId
-			});
+			}).show();
 		}
 		
 		function showProposeMissionDialog(numberOfParticipants) {
@@ -198,9 +198,13 @@ Ext.define('js.game.store.GameStateStore', {
 						var leftToVote = getArrayString(state.playersLeftToVote);
 						setStatusMessage('Waiting for mission result votes from: ' + leftToVote);
 					} else if (state.name == 'AssassinationState') {
-						setButtonText('Assassinate Player', 'Action Two');
-						setButtonVisibility(true, false);
-						setAssassinationHandler();
+						if (state.assassin == me.userName) {
+							setButtonText('Assassinate Player', 'Action Two');
+							setButtonVisibility(true, false);
+							setAssassinationHandler();
+						} else {
+							setButtonVisibility(false, false);
+						}
 						setStatusMessage('Waiting for assassination from: ' + state.assassin);
 					} else if (state.name == 'GameOverState') {
 						setButtonVisibility(false, false);
@@ -210,7 +214,11 @@ Ext.define('js.game.store.GameStateStore', {
 						} else if (state.winner == 'EVIL') {
 							winner = 'evil';
 						}
-						setStatusMessage('Game over, ' + winner + ' wins.');
+						var extraMessage = "";
+						if (typeof state.extraMessage !== 'undefined' && state.extraMessage != '') {
+							extraMessage = state.extraMessage + ", ";
+						}
+						setStatusMessage('Game over, ' + extraMessage + winner + ' wins.');
 					}
 					me.updateGameTask.delay(1000);
 				}

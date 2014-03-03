@@ -9,6 +9,7 @@ Ext.define('js.game.AssassinationWindow', {
     defaults: { 
     	padding: '5',
     	xtype: 'radio',
+    	name: 'player',
     	margin: '0 0 0 4'
     },
     layout: { 
@@ -36,25 +37,34 @@ Ext.define('js.game.AssassinationWindow', {
 		Ext.Array.push(assassinationWindowItems, { 
 			xtype: 'button',
 			text: 'Assassinate Player',
-			disabled: true,
 			scope: window,
 			handler: window.assassinate_click
 		});
 		
 		window.add(assassinationWindowItems);
+
+		var options = window.query("radio");
+		options[0].setValue(true);
 	},
 	
 	assassinate_click: function() {
 		
 		var window = this;
 		
-		var selected = window.down("option[selected=true]");
+		var options = window.query("radio");
+		var selected = '';
+		for (var i = 0; i < options.length; i++) {
+			if (options[i].getValue()) {
+				selected = options[i].getSubmitValue();
+				break;
+			}
+		}
 		
 		Ext.Ajax.request({
 			url: '/server/action',
 			params: {
 				gameId: window.gameId,
-				action: Ext.JSON.encode({ assassinated: selected.getValue() })
+				action: Ext.JSON.encode({ assassinated: selected })
 			},
 			success: function(response) {
 				var wrapper = Ext.JSON.decode(response.responseText);

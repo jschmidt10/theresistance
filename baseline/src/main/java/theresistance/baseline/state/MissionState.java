@@ -9,6 +9,8 @@ import java.util.Set;
 import java.util.TreeMap;
 import java.util.TreeSet;
 
+import theresistance.baseline.role.Assassin;
+import theresistance.baseline.role.Merlin;
 import theresistance.core.Alignment;
 import theresistance.core.Game;
 import theresistance.core.Mission.Result;
@@ -101,7 +103,30 @@ public class MissionState extends GameState<MissionResultAction>
 		Alignment winner = Alignment.NEITHER;
 		if (succeeds >= ROUNDS_NEEDED_TO_WIN)
 		{
-			winner = Alignment.GOOD;
+			boolean hasMerlin = false;
+			boolean hasAssassin = false;
+			Player assassin = null;
+			for (Player player : game.getPlayers())
+			{
+				if (player.getRole() instanceof Merlin)
+				{
+					hasMerlin = true;
+				}
+				else if (player.getRole() instanceof Assassin)
+				{
+					hasAssassin = true;
+					assassin = player;
+				}
+			}
+			if (hasMerlin && hasAssassin)
+			{
+				game.setState(new AssassinationState(assassin.getName()));
+				return;
+			}
+			else
+			{
+				winner = Alignment.GOOD;
+			}
 		}
 		else if (failures >= ROUNDS_NEEDED_TO_WIN)
 		{
