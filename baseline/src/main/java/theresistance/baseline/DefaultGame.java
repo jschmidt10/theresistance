@@ -1,9 +1,9 @@
 package theresistance.baseline;
 
+import theresistance.baseline.state.ProposeState;
 import theresistance.core.Game;
 import theresistance.core.GameConfig;
 import theresistance.core.state.GameState;
-import theresistance.core.state.ProposeState;
 
 /**
  * The default game flow. Includes: propose, vote, mission, assassination

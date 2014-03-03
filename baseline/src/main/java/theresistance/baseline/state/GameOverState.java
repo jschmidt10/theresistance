@@ -1,7 +1,8 @@
-package theresistance.core.state;
+package theresistance.baseline.state;
 
 import theresistance.core.Alignment;
 import theresistance.core.Game;
+import theresistance.core.state.GameState;
 
 public class GameOverState extends GameState<GameOverAction> 
 {

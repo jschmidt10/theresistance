@@ -1,8 +1,9 @@
-package theresistance.core.state;
+package theresistance.baseline.state;
 
 import java.util.List;
 
 import theresistance.core.Player;
+import theresistance.core.state.GameAction;
 
 /**
  * A proposal

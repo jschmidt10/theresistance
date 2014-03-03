@@ -1,4 +1,4 @@
-package theresistance.core.state;
+package theresistance.baseline.state;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -12,6 +12,7 @@ import java.util.TreeSet;
 import theresistance.core.Alignment;
 import theresistance.core.Game;
 import theresistance.core.Mission.Result;
+import theresistance.core.state.GameState;
 import theresistance.core.Player;
 import theresistance.core.Round;
 
