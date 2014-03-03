@@ -17,6 +17,7 @@ import theresistance.core.Round;
 
 public class MissionState extends GameState<MissionResultAction>
 {
+	private static final int ROUNDS_NEEDED_TO_WIN = 3;
 	Map<String, Result> results = new TreeMap<>();
 	Set<String> leftToVote = new TreeSet<>();
 
@@ -75,39 +76,43 @@ public class MissionState extends GameState<MissionResultAction>
 			int next = random.nextInt(results.size());
 			shuffledResults.add(results.remove(next));
 		}
-
+		
 		game.getCurrentRound().setResults(shuffledResults);
 		game.completeRound();
 
-		if (game.getCurrentRound() == null)
+		int succeeds = 0;
+		int failures = 0;
+		for (Round round : game.getRounds())
 		{
-			int succeeds = 0;
-			int failures = 0;
-			for (Round round : game.getRounds())
+			if (!round.isFinished()) 
 			{
-				if (round.isSuccess())
-				{
-					succeeds++;
-				}
-				else
-				{
-					failures++;
-				}
+				break;
 			}
-			Alignment winner = Alignment.NEITHER;
-			if (succeeds > failures)
+			if (round.isSuccess())
 			{
-				winner = Alignment.GOOD;
+				succeeds++;
 			}
 			else
 			{
-				winner = Alignment.EVIL;
+				failures++;
 			}
-
+		}
+		Alignment winner = Alignment.NEITHER;
+		if (succeeds >= ROUNDS_NEEDED_TO_WIN)
+		{
+			winner = Alignment.GOOD;
+		}
+		else if (failures >= ROUNDS_NEEDED_TO_WIN)
+		{
+			winner = Alignment.EVIL;
+		}
+		
+		if (winner != Alignment.NEITHER)
+		{
 			game.setWinners(winner);
 			game.setState(new GameOverState(winner));
-		}
-		else
+		} 
+		else 
 		{
 			game.setState(new ProposeState(game.getCurrentLeader(), game.getCurrentRound().getMission()
 					.getNumParticipants()));

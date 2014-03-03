@@ -54,7 +54,7 @@ Ext.define('js.game.AssassinationWindow', {
 			url: '/server/action',
 			params: {
 				gameId: window.gameId,
-				action: { assassinated: selected.getValue() }
+				action: Ext.JSON.encode({ assassinated: selected.getValue() })
 			},
 			success: function(response) {
 				var wrapper = Ext.JSON.decode(response.responseText);

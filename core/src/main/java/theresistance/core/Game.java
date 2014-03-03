@@ -3,6 +3,7 @@ package theresistance.core;
 import java.util.LinkedList;
 import java.util.List;
 
+import theresistance.core.state.GameAction;
 import theresistance.core.state.GameState;
 import theresistance.core.util.ExtraInfoBag;
 
@@ -11,6 +12,7 @@ import theresistance.core.util.ExtraInfoBag;
  */
 public abstract class Game
 {
+	private static final int LAST_ROUND_INDEX = 4;
 	private String id;
 	private final GameConfig config;
 	private final List<Round> rounds = new LinkedList<>();
@@ -103,7 +105,7 @@ public abstract class Game
 		isStarted = true;
 	}
 
-	public abstract GameState getInitialState();
+	public abstract GameState<? extends GameAction> getInitialState();
 
 	/**
 	 * @return true if the game has already started, false, otherwise
@@ -123,9 +125,12 @@ public abstract class Game
 		{
 			handler.roundFinished();
 		}
-
-		curRound++;
-		gotoNextLeader();
+		
+		if (curRound < LAST_ROUND_INDEX)
+		{
+			curRound++;
+			gotoNextLeader();
+		}
 	}
 
 	/**
@@ -135,7 +140,7 @@ public abstract class Game
 	{
 		return winners != Alignment.NEITHER;
 	}
-
+	
 	/**
 	 * @return the winning side
 	 */

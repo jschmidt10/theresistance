@@ -108,10 +108,10 @@ Ext.define('js.game.store.GameStateStore', {
 				url: '/server/action',
 				params: {
 					gameId: me.gameId,
-					action: {
+					action: Ext.JSON.encode({
 						player: me.userName,
 						vote: approval 
-					}
+					})
 				},
 				success: function(response) {
 					var wrapper = Ext.JSON.decode(response.responseText);
@@ -126,10 +126,10 @@ Ext.define('js.game.store.GameStateStore', {
 				url: '/server/action',
 				params: {
 					gameId: me.gameId,
-					action: {
+					action: Ext.JSON.encode({
 						player: me.userName,
 						result: result
-					}
+					})
 				},
 				success: function(response) {
 					var wrapper = Ext.JSON.decode(response.responseText);
@@ -152,7 +152,7 @@ Ext.define('js.game.store.GameStateStore', {
 					for (var i = 0; i < results.length; i++) {
 						var index = results[i].index;
 						var text = missionButtons[index].getText();
-						if (!text.contains('Result')) {
+						if (text.indexOf('Result') == -1) {
 							missionButtons[index].setText(text + '<br/>Result: ' + results[i].result + '<br/>Fails: ' + results[i].numFails);
 						}
 					}
