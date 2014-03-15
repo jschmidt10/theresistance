@@ -22,6 +22,7 @@ public class ProposeState extends GameState<ProposeAction>
 	{
 		this.leader = leader;
 		this.numberOfParticipants = numberOfParticipants;
+		this.isHammer = isHammer;
 	}
 	
 	@Override
