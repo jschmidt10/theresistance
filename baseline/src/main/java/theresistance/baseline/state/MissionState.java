@@ -23,14 +23,16 @@ public class MissionState extends GameState<MissionResultAction>
 	private static final int ROUNDS_NEEDED_TO_WIN = 3;
 	Map<String, Result> results = new TreeMap<>();
 	Set<String> leftToVote = new TreeSet<>();
+	Player leader;
 
-	public MissionState(Collection<Player> participants)
+	public MissionState(Collection<Player> participants, Player leader)
 	{
 		for (Player player : participants)
 		{
 			results.put(player.getName(), null);
 			leftToVote.add(player.getName());
 		}
+		this.leader = leader;
 	}
 
 	@Override
@@ -65,6 +67,11 @@ public class MissionState extends GameState<MissionResultAction>
 	public Set<String> getPlayersLeftToVote()
 	{
 		return leftToVote;
+	}
+	
+	public String getLeader()
+	{
+		return leader.getName();
 	}
 
 	@Override

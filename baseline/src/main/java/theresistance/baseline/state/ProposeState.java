@@ -69,7 +69,7 @@ public class ProposeState extends GameState<ProposeAction>
 		if (isHammer)
 		{
 			round.setParticipants(proposal.getParticipants());
-			game.setState(new MissionState(proposal.getParticipants()));
+			game.setState(new MissionState(proposal.getParticipants(), leader));
 		}
 		else
 		{

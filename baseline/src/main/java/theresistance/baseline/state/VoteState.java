@@ -81,7 +81,7 @@ public class VoteState extends GameState<VoteAction>
 		if (proposal.isApproved())
 		{
 			round.setParticipants(proposal.getParticipants());
-			game.setState(new MissionState(proposal.getParticipants()));
+			game.setState(new MissionState(proposal.getParticipants(), proposal.getLeader()));
 		}
 		else
 		{
