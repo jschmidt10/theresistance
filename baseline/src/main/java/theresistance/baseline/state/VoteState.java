@@ -56,6 +56,11 @@ public class VoteState extends GameState<VoteAction>
 	{
 		return leftToVote;
 	}
+	
+	public String getLeader()
+	{
+		return proposal.getLeader().getName();
+	}
 
 	public Set<String> getProposal()
 	{
