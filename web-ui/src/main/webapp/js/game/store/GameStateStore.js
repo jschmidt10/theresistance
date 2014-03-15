@@ -179,14 +179,19 @@ Ext.define('js.game.store.GameStateStore', {
 						} else {
 							setButtonVisibility(false, false);
 						}
-						setStatusMessage('Waiting for mission proposal from ' + state.leader);
+						var hammerText = '';
+						if (state.hammer == true) {
+							hammerText = ' hammer';
+						}
+						setStatusMessage('Waiting for' + hammerText + ' mission proposal from ' + state.leader);
 					} else if (state.name == 'VoteState') {
 						setButtonVisibility(true, true);
 						setButtonText('Accept Mission', 'Reject Mission');
 						setApprovalHandlers();
 						var proposal = getArrayString(state.proposal);
 						var leftToVote = getArrayString(state.playersLeftToVote);
-						setStatusMessage('Waiting for votes on mission: ' + proposal + '. from: ' + leftToVote);
+						var leader = state.leader;
+						setStatusMessage('Waiting for votes on ' + leader + '\'s mission: ' + proposal + '. from: ' + leftToVote);
 					} else if (state.name == 'MissionState') {
 						if (Ext.Array.contains(state.participants, me.userName)) {
 							setButtonVisibility(true, true);
@@ -195,8 +200,9 @@ Ext.define('js.game.store.GameStateStore', {
 						} else {
 							setButtonVisibility(false, false);
 						}
+						var leader = state.leader;
 						var leftToVote = getArrayString(state.playersLeftToVote);
-						setStatusMessage('Waiting for mission result votes from: ' + leftToVote);
+						setStatusMessage('Waiting for ' + leader + '\'s mission result votes from: ' + leftToVote);
 					} else if (state.name == 'AssassinationState') {
 						if (state.assassin == me.userName) {
 							setButtonText('Assassinate Player', 'Action Two');
