@@ -140,8 +140,10 @@ public class MissionState extends GameState<MissionResultAction>
 		} 
 		else 
 		{
-			game.setState(new ProposeState(game.getCurrentLeader(), game.getCurrentRound().getMission()
-					.getNumParticipants()));
+			Round round = game.getCurrentRound();
+			boolean isHammer = round.getProposalIndex() == 4;
+			game.setState(new ProposeState(game.getCurrentLeader(), round.getMission()
+					.getNumParticipants(), isHammer));
 		}
 	}
 }

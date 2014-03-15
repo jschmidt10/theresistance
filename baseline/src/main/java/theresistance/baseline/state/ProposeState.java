@@ -16,8 +16,9 @@ public class ProposeState extends GameState<ProposeAction>
 	private final Player leader;
 	private int numberOfParticipants;
 	private List<Player> participants;
+	private boolean isHammer;
 
-	public ProposeState(Player leader, int numberOfParticipants)
+	public ProposeState(Player leader, int numberOfParticipants, boolean isHammer)
 	{
 		this.leader = leader;
 		this.numberOfParticipants = numberOfParticipants;
@@ -51,6 +52,11 @@ public class ProposeState extends GameState<ProposeAction>
 		return numberOfParticipants;
 	}
 	
+	public boolean isHammer() 
+	{
+		return isHammer; 
+	}
+	
 	@Override
 	public void advance(Game game)
 	{
@@ -60,7 +66,7 @@ public class ProposeState extends GameState<ProposeAction>
 		round.addProposal(proposal);
 
 		// check hammer
-		if (round.getProposalIndex() == 5)
+		if (isHammer)
 		{
 			round.setParticipants(proposal.getParticipants());
 			game.setState(new MissionState(proposal.getParticipants()));

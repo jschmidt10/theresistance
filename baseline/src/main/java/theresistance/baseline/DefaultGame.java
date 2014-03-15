@@ -18,6 +18,6 @@ public class DefaultGame extends Game
 	@Override
 	public GameState<?> getInitialState()
 	{
-		return new ProposeState(getCurrentLeader(), getCurrentRound().getMission().getNumParticipants());
+		return new ProposeState(getCurrentLeader(), getCurrentRound().getMission().getNumParticipants(), false);
 	}
 }

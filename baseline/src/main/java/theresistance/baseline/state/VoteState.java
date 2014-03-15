@@ -85,8 +85,9 @@ public class VoteState extends GameState<VoteAction>
 		}
 		else
 		{
+			boolean isHammer = round.getProposalIndex() == 4;
 			game.gotoNextLeader();
-			game.setState(new ProposeState(game.getCurrentLeader(), round.getMission().getNumParticipants()));
+			game.setState(new ProposeState(game.getCurrentLeader(), round.getMission().getNumParticipants(), isHammer));
 		}
 	}
 }
