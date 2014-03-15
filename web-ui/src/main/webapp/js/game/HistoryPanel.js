@@ -6,7 +6,7 @@ Ext.define('js.game.HistoryPanel', {
 	
 	margin: '0',
 	border: 0,
-	flex: 2,
+	flex: 3,
 	defaults: { margin: '8' },
 	
 	layout: {

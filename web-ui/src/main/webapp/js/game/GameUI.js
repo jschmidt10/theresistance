@@ -89,14 +89,14 @@ Ext.define('js.game.GameUI', {
 				        xtype: 'label',
 						text: 'Game status here...',
 						itemId: 'gameStatusLabel',
-						margin: '5 0 5 0',
+						margin: '7 0 7 0',
 						width: '100%',
-						style: 'text-align: center'
+						style: 'text-align: center; font-size: 16px'
 					}]
 				}, {
 					xtype: 'panel',
 					title: 'Missions',
-					flex: 1,
+					flex: 3,
 					itemId: 'missions',
 					layout: {
 						type: 'hbox',
