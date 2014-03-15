@@ -2,7 +2,6 @@ package theresistance.baseline.state;
 
 import theresistance.core.Mission.Result;
 import theresistance.core.state.GameAction;
-import theresistance.core.Player;
 
 /**
  * Submitting a mission result card
