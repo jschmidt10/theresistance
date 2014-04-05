@@ -8,15 +8,10 @@ import java.util.stream.Collectors;
 import theresistance.core.Mission.Result;
 import theresistance.core.Player;
 import theresistance.core.round.InteractionNode;
-import theresistance.core.round.RoundNode;
 import theresistance.core.selection.PlayerSelection;
 import theresistance.core.selection.StaticChoice;
 
 public class MissionInteractionNode extends InteractionNode<Result>{
-
-	public MissionInteractionNode(RoundNode next) {
-		super(next);
-	}
 
 	@Override
 	public List<? extends PlayerSelection<Result>> getInteractions() {

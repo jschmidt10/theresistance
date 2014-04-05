@@ -7,15 +7,10 @@ import java.util.Set;
 import theresistance.core.Player;
 import theresistance.core.Round;
 import theresistance.core.round.InteractionNode;
-import theresistance.core.round.RoundNode;
 import theresistance.core.selection.PlayerSelection;
 import theresistance.core.selection.PlayerSubsetChoice;
 
 public class ProposalInteractionNode extends InteractionNode<Set<Player>> {
-
-	public ProposalInteractionNode(RoundNode next) {
-		super(next);
-	}
 
 	@Override
 	public List<? extends PlayerSelection<Set<Player>>> getInteractions() {

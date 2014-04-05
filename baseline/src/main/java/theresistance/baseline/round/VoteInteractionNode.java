@@ -8,16 +8,11 @@ import java.util.stream.Collectors;
 import theresistance.core.Player;
 import theresistance.core.Proposal.Vote;
 import theresistance.core.round.InteractionNode;
-import theresistance.core.round.RoundNode;
 import theresistance.core.selection.PlayerSelection;
 import theresistance.core.selection.StaticChoice;
 
 public class VoteInteractionNode extends InteractionNode<Vote> {
  
-	public VoteInteractionNode(RoundNode next) {
-		super(next);
-	}
-
 	@Override
 	public List<? extends PlayerSelection<Vote>> getInteractions() {
 		

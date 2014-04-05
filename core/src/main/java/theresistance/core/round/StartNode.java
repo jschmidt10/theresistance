@@ -3,10 +3,11 @@ package theresistance.core.round;
 
 public class StartNode extends RoundNode {
 
-	final RoundNode next;
+	private RoundNode next;
 	
-	public StartNode(RoundNode next) {
+	public StartNode onNext(RoundNode next) {
 		this.next = next;
+		return this;
 	}
 	
 	@Override

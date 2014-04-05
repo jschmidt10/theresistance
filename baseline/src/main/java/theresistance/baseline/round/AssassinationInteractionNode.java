@@ -7,15 +7,10 @@ import java.util.stream.Collectors;
 import theresistance.baseline.role.Assassin;
 import theresistance.core.Player;
 import theresistance.core.round.InteractionNode;
-import theresistance.core.round.RoundNode;
 import theresistance.core.selection.PlayerSelection;
 import theresistance.core.selection.PlayerSubsetChoice;
 
 public class AssassinationInteractionNode extends InteractionNode<Set<Player>> {
-
-	public AssassinationInteractionNode(RoundNode next) {
-		super(next);
-	}
 
 	@Override
 	public List<? extends PlayerSelection<Set<Player>>> getInteractions() {

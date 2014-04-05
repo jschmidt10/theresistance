@@ -15,15 +15,16 @@ abstract public class InteractionNode<T> extends RoundNode
 {
 	protected Map<Player, T> choices = new HashMap<>();
 	protected RoundNode next;
-	
-	public InteractionNode(RoundNode next) 
-	{
-		this.next = next;
-	}
-	
+
 	public abstract List<? extends PlayerSelection<T>> getInteractions();
 	
 	public abstract Set<Player> getNecessaryPlayers();
+	
+	public InteractionNode<T> onNext(RoundNode next)
+	{
+		this.next = next;
+		return this;
+	}
 	
 	@Override
 	public RoundNode next()
