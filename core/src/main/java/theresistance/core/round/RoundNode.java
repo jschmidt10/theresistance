@@ -13,5 +13,6 @@ public abstract class RoundNode
 	{
 		this.game = game;
 	}
+	
 	public abstract RoundNode next();
 }

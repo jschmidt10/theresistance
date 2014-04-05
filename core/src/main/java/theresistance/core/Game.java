@@ -21,4 +21,16 @@ public class Game
 		return null;
 	}
 
+	public boolean isOver()
+	{
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	public Alignment getWinner()
+	{
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }
