@@ -2,10 +2,13 @@ package theresistance.core;
 
 import java.util.Set;
 
+import theresistance.core.round.StartNode;
 
-public class Game
+
+public abstract class Game
 {
-
+	public abstract StartNode getGameGraph();
+	
 	public Player getCurrentLeader() {
 		// TODO Auto-generated method stub
 		return null;
