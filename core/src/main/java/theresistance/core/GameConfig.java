@@ -12,7 +12,6 @@ public class GameConfig
 	private String owner;
 	private List<Role> roles = new LinkedList<>();
 	private List<Mission> missions = new LinkedList<>();
-	private List<PostRoundEventHandler> handlers = new LinkedList<>();
 
 	public String getId()
 	{
@@ -52,15 +51,5 @@ public class GameConfig
 	public void setMissions(List<Mission> missions)
 	{
 		this.missions = missions;
-	}
-
-	public List<PostRoundEventHandler> getHandlers()
-	{
-		return handlers;
-	}
-
-	public void setHandlers(List<PostRoundEventHandler> handlers)
-	{
-		this.handlers = handlers;
 	}
 }
