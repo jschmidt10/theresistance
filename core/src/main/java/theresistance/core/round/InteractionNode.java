@@ -5,29 +5,28 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import theresistance.core.Game;
 import theresistance.core.Player;
 import theresistance.core.selection.PlayerSelection;
 
 /**
  * Represents a part of processing where players take some action
  */
-abstract public class InteractionNode<T> implements RoundNode
+abstract public class InteractionNode<T> extends RoundNode
 {
-	private Map<Player, T> choices = new HashMap<>();
-	private RoundNode next;
+	protected Map<Player, T> choices = new HashMap<>();
+	protected RoundNode next;
 	
-	public InteractionNode(RoundNode next)
+	public InteractionNode(RoundNode next) 
 	{
 		this.next = next;
 	}
 	
-	abstract List<PlayerSelection<T>> getInteractions(Game game);
+	public abstract List<? extends PlayerSelection<T>> getInteractions();
 	
-	abstract Set<Player> getNecessaryPlayers();
+	public abstract Set<Player> getNecessaryPlayers();
 	
 	@Override
-	public RoundNode next(Game game)
+	public RoundNode next()
 	{
 		return next;
 	}

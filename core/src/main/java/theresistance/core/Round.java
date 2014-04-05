@@ -3,6 +3,8 @@ package theresistance.core;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
 
 import theresistance.core.Mission.Result;
 
@@ -16,7 +18,7 @@ public class Round
 	private int index;
 	private Mission mission;
 	private List<Proposal> proposals = new ArrayList<>(NUM_PROPOSALS);
-	private List<Player> participants = new LinkedList<>();
+	private Set<Player> participants = new TreeSet<>();
 	private List<Mission.Result> results = new LinkedList<>();
 
 	public Round(int index, Mission mission)
@@ -52,12 +54,12 @@ public class Round
 		}
 	}
 
-	public void setParticipants(List<Player> participants)
+	public void setParticipants(Set<Player> participants)
 	{
 		this.participants = participants;
 	}
 
-	public List<Player> getParticipants()
+	public Set<Player> getParticipants()
 	{
 		return participants;
 	}

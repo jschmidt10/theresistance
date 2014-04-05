@@ -1,6 +1,5 @@
 package theresistance.core.selection;
 
-import java.util.List;
 import java.util.Set;
 
 import theresistance.core.Player;
@@ -8,7 +7,7 @@ import theresistance.core.Player;
 /**
  * Represents a selection which includes some subset of the players
  */
-public class PlayerSubsetChoice extends PlayerSelection<List<Player>>
+public class PlayerSubsetChoice extends PlayerSelection<Set<Player>>
 {
 	private Set<Player> subset;
 	private int numPlayers;

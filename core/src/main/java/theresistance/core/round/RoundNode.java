@@ -5,7 +5,13 @@ import theresistance.core.Game;
 /**
  * Represents a node in the round processing graph
  */
-public interface RoundNode
+public abstract class RoundNode
 {
-	RoundNode next(Game game);
+	protected Game game;
+	
+	protected void initialize(Game game) 
+	{
+		this.game = game;
+	}
+	public abstract RoundNode next();
 }

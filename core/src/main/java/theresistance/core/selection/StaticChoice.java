@@ -7,17 +7,17 @@ import theresistance.core.Player;
 /**
  * Represents a selection between static options
  */
-public class StaticChoice extends PlayerSelection<String>
+public class StaticChoice<T> extends PlayerSelection<T>
 {
-	private Set<String> options;
+	private Set<T> options;
 	
-	public StaticChoice(Player player, Set<String> options)
+	public StaticChoice(Player player, Set<T> options)
 	{
 		super(player);
 		this.options = options;
 	}
 	
-	public Set<String> getOptions()
+	public Set<T> getOptions()
 	{
 		return options;
 	}
